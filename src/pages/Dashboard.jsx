@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, lazy, Suspense } from 'react'
 import toast from 'react-hot-toast'
 import useWasteStore from '../store/useWasteStore'
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts'
-import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet'
-import 'leaflet/dist/leaflet.css'
 import '../index.css'
+
+// Lazy load Leaflet components (requires window/DOM)
+const LeafletMap = lazy(() => import('../components/LeafletMap'))
 
 const mapMarkers = [
   { lat: 41.0082, lng: 28.9784, label: 'Fatih District', density: 'High', weight: 1200, color: '#0bda46', radius: 18 },
@@ -185,42 +186,9 @@ export default function Dashboard() {
                 </select>
               </div>
               <div className="relative flex-1 min-h-[400px]">
-                <MapContainer
-                  center={[41.015, 28.98]}
-                  zoom={12}
-                  scrollWheelZoom={true}
-                  style={{ height: '100%', width: '100%', minHeight: '400px' }}
-                  zoomControl={false}
-                >
-                  <TileLayer
-                    attribution='&copy; <a href="https://carto.com/">CARTO</a>'
-                    url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-                  />
-                  {mapMarkers.map((marker, i) => (
-                    <CircleMarker
-                      key={i}
-                      center={[marker.lat, marker.lng]}
-                      radius={marker.radius}
-                      pathOptions={{
-                        color: marker.color,
-                        fillColor: marker.color,
-                        fillOpacity: 0.35,
-                        weight: 2,
-                      }}
-                      eventHandlers={{
-                        click: () => toast.success(`${marker.label}: ${marker.weight} kg collected`),
-                      }}
-                    >
-                      <Popup>
-                        <div style={{ color: '#0f172a', fontFamily: 'Inter, sans-serif' }}>
-                          <strong>{marker.label}</strong><br />
-                          Density: <span style={{ color: marker.color, fontWeight: 'bold' }}>{marker.density}</span><br />
-                          Weight: {marker.weight} kg
-                        </div>
-                      </Popup>
-                    </CircleMarker>
-                  ))}
-                </MapContainer>
+                <Suspense fallback={<div className="flex items-center justify-center h-full bg-slate-800 text-slate-500 text-sm">Loading map...</div>}>
+                  <LeafletMap markers={mapMarkers} />
+                </Suspense>
 
                 {/* Legend overlay */}
                 <div className="absolute bottom-4 left-4 z-[1000] bg-background-dark/90 backdrop-blur p-3 rounded-lg border border-border-dark text-[10px] space-y-2">
