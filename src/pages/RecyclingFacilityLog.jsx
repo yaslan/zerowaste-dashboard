@@ -1,19 +1,32 @@
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
 import toast from 'react-hot-toast';
 import useWasteStore from '../store/useWasteStore';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
 
-const typeData = [
-    { type: 'Plastic', amount: 4500 },
-    { type: 'Metal', amount: 3200 },
-    { type: 'Organic', amount: 1850 },
-    { type: 'Glass', amount: 2100 },
-];
-
 export default function RecyclingFacilityLog() {
-    const [autoRelease, setAutoRelease] = useState(true);
+    const [autoRelease, setAutoRelease] = React.useState(true);
     const batches = useWasteStore(state => state.batches);
     const processPending = useWasteStore(state => state.processPending);
+    const totalRecycledTons = useWasteStore(state => state.totalRecycledTons);
+
+    // Dynamically compute intake by type from batches
+    const typeData = useMemo(() => {
+        const acc = { Plastic: 0, Metal: 0, Organic: 0, Glass: 0 };
+        batches.forEach(b => {
+            const t = b.type?.toUpperCase?.() || '';
+            if (t.includes('PLASTIC')) acc.Plastic += b.weight;
+            else if (t.includes('METAL')) acc.Metal += b.weight;
+            else if (t.includes('ORGANIC') || t.includes('ORG')) acc.Organic += b.weight;
+            else if (t.includes('GLASS')) acc.Glass += b.weight;
+            else acc.Plastic += b.weight; // fallback
+        });
+        return [
+            { type: 'Plastic', amount: acc.Plastic },
+            { type: 'Metal', amount: acc.Metal },
+            { type: 'Organic', amount: acc.Organic },
+            { type: 'Glass', amount: acc.Glass },
+        ];
+    }, [batches]);
 
     const handleProcessBatch = () => {
         const hasPending = batches.some(b => b.status === 'PENDING');
@@ -137,7 +150,7 @@ export default function RecyclingFacilityLog() {
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                             <div className="bg-white dark:bg-primary/10 p-5 rounded-xl border border-slate-200 dark:border-primary/20 hover:border-primary/50 transition-colors">
                                 <p className="text-slate-500 text-xs font-bold uppercase tracking-wider">Total Intake</p>
-                                <h3 className="text-2xl font-bold mt-1">124.5 <span className="text-sm font-normal text-slate-500">Tons</span></h3>
+                                <h3 className="text-2xl font-bold mt-1">{totalRecycledTons.toLocaleString()} <span className="text-sm font-normal text-slate-500">Tons</span></h3>
                                 <div className="flex items-center mt-2 text-emerald-500 gap-1 text-sm font-medium">
                                     <span className="material-symbols-outlined text-sm">trending_up</span>
                                     12% from last week

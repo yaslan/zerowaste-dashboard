@@ -1,22 +1,31 @@
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
 import toast from 'react-hot-toast';
 import useWasteStore from '../store/useWasteStore';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-
-const impactData = [
-    { week: 'W1', recycled: 12, carbon: 3 },
-    { week: 'W2', recycled: 15, carbon: 4.5 },
-    { week: 'W3', recycled: 19, carbon: 5 },
-    { week: 'W4', recycled: 24, carbon: 7 },
-    { week: 'W5', recycled: 30, carbon: 8.5 },
-    { week: 'W6', recycled: 45.2, carbon: 12.5 },
-];
 
 export default function CitizenImpactApp() {
     const userBalance = useWasteStore(state => state.userBalance);
     const transactions = useWasteStore(state => state.transactions || []);
     const redeemTokens = useWasteStore(state => state.redeemTokens);
     const logCollection = useWasteStore(state => state.logCollection);
+
+    // Derive totals from earn transactions
+    const totalRecycledKg = useMemo(() =>
+        transactions.filter(t => t.type === 'earn').reduce((sum, t) => sum + t.amount, 0),
+        [transactions]
+    );
+    const totalCarbonSaved = useMemo(() => +(totalRecycledKg * 0.28).toFixed(1), [totalRecycledKg]);
+
+    // Build chart data: last 6 earn transactions grouped as weekly snapshots
+    const impactData = useMemo(() => {
+        const earns = transactions.filter(t => t.type === 'earn');
+        if (earns.length === 0) return [{ week: 'W1', recycled: 0, carbon: 0 }];
+        let running = 0;
+        return earns.slice().reverse().slice(-6).map((t, i) => {
+            running += t.amount;
+            return { week: `W${i + 1}`, recycled: +running.toFixed(1), carbon: +(running * 0.28).toFixed(1) };
+        });
+    }, [transactions]);
 
     const handleRedeem = () => {
         if (userBalance < 100) {
@@ -71,16 +80,16 @@ export default function CitizenImpactApp() {
                             <span className="material-symbols-outlined text-sm">recycling</span>
                             <p className="text-sm font-medium">Recycled</p>
                         </div>
-                        <p className="text-slate-900 dark:text-slate-100 text-2xl font-bold font-display">45.2 kg</p>
-                        <p className="text-emerald-600 dark:text-emerald-400 text-xs font-semibold">+15% this month</p>
+                        <p className="text-slate-900 dark:text-slate-100 text-2xl font-bold font-display">{totalRecycledKg.toFixed(1)} kg</p>
+                        <p className="text-emerald-600 dark:text-emerald-400 text-xs font-semibold">Total Earned</p>
                     </div>
                     <div className="flex flex-col gap-2 rounded-xl p-5 bg-primary/5 dark:bg-primary/20 border border-primary/10 hover:border-primary/40 transition-colors cursor-pointer" onClick={() => toast('Viewing Carbon Offset Details')}>
                         <div className="flex items-center gap-2 text-primary dark:text-emerald-400">
                             <span className="material-symbols-outlined text-sm">co2</span>
                             <p className="text-sm font-medium">Carbon Saved</p>
                         </div>
-                        <p className="text-slate-900 dark:text-slate-100 text-2xl font-bold font-display">12.5 kg</p>
-                        <p className="text-emerald-600 dark:text-emerald-400 text-xs font-semibold">+8% this month</p>
+                        <p className="text-slate-900 dark:text-slate-100 text-2xl font-bold font-display">{totalCarbonSaved} kg</p>
+                        <p className="text-emerald-600 dark:text-emerald-400 text-xs font-semibold">CO₂ Offset</p>
                     </div>
                 </div>
 

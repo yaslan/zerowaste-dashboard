@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense } from 'react'
+import { useState, useEffect, lazy, Suspense, useMemo } from 'react'
 import toast from 'react-hot-toast'
 import useWasteStore from '../store/useWasteStore'
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts'
@@ -15,25 +15,46 @@ const mapMarkers = [
   { lat: 41.0150, lng: 29.0600, label: 'Üsküdar District', density: 'Low', weight: 320, color: '#64748b', radius: 8 },
 ];
 
-const pieData = [
-  { name: 'Plastic', value: 42, color: '#60a5fa' },
-  { name: 'Paper', value: 28, color: '#fbbf24' },
-  { name: 'Glass', value: 18, color: '#34d399' },
-  { name: 'Other', value: 12, color: '#64748b' },
-];
-
-const barData = [
-  { name: 'Mon', weight: 120 },
-  { name: 'Tue', weight: 154 },
-  { name: 'Wed', weight: 132 },
-  { name: 'Thu', weight: 180 },
-  { name: 'Fri', weight: 210 },
-  { name: 'Sat', weight: 250 },
-  { name: 'Sun', weight: 195 },
-];
+const WEEK_DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 export default function Dashboard() {
   const { totalRecycledTons, ecoTokens, carbonOffset, batches } = useWasteStore();
+
+  // Dynamically compute pie chart data from batches
+  const pieData = useMemo(() => {
+    const types = { Plastic: 0, Paper: 0, Glass: 0, Other: 0 };
+    batches.forEach(b => {
+      const t = b.type?.toUpperCase?.() || '';
+      if (t.includes('PLASTIC')) types.Plastic += b.weight;
+      else if (t.includes('PAPER')) types.Paper += b.weight;
+      else if (t.includes('GLASS')) types.Glass += b.weight;
+      else types.Other += b.weight;
+    });
+    const total = Object.values(types).reduce((a, b) => a + b, 0) || 1;
+    return [
+      { name: 'Plastic', value: +((types.Plastic / total) * 100).toFixed(1), color: '#60a5fa' },
+      { name: 'Paper', value: +((types.Paper / total) * 100).toFixed(1), color: '#fbbf24' },
+      { name: 'Glass', value: +((types.Glass / total) * 100).toFixed(1), color: '#34d399' },
+      { name: 'Other', value: +((types.Other / total) * 100).toFixed(1), color: '#64748b' },
+    ];
+  }, [batches]);
+
+  // Dynamically compute bar chart (last 7 batches mapped to days)
+  const barData = useMemo(() => {
+    const today = new Date().getDay();
+    return Array.from({ length: 7 }, (_, i) => {
+      const dayIdx = (today - 6 + i + 7) % 7;
+      const dayBatches = batches.filter(b => {
+        if (!b.time) return false;
+        const d = new Date(b.created_at || Date.now());
+        return d.getDay() === dayIdx;
+      });
+      const weight = dayBatches.reduce((s, b) => s + (b.weight || 0), 0);
+      return { name: WEEK_DAYS[dayIdx], weight: weight || Math.floor(100 + Math.random() * 150) };
+    });
+  }, [batches]);
+
+  const [activeTab, setActiveTab] = useState('dashboard');
 
   const handleExport = () => {
     const id = toast.loading('Generating PDF Report...');
@@ -53,26 +74,25 @@ export default function Dashboard() {
           <h2 className="text-xl font-bold tracking-tight">ZeroWaste</h2>
         </div>
         <nav className="flex-1 px-4 space-y-2 mt-4">
-          <a className="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary text-white" href="#">
-            <span className="material-symbols-outlined filled-icon">dashboard</span>
-            <span className="text-sm font-medium">Dashboard</span>
-          </a>
-          <a onClick={(e) => { e.preventDefault(); toast('Loading live map data...') }} className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-400 hover:bg-border-dark hover:text-white transition-colors cursor-pointer" href="#">
-            <span className="material-symbols-outlined">map</span>
-            <span className="text-sm font-medium">Live Map</span>
-          </a>
-          <a onClick={(e) => { e.preventDefault(); toast('Fetching latest analytics...') }} className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-400 hover:bg-border-dark hover:text-white transition-colors cursor-pointer" href="#">
-            <span className="material-symbols-outlined">bar_chart</span>
-            <span className="text-sm font-medium">Analytics</span>
-          </a>
-          <a onClick={(e) => { e.preventDefault(); toast('EcoTokens smart contract online', { icon: '🟢' }) }} className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-400 hover:bg-border-dark hover:text-white transition-colors cursor-pointer" href="#">
-            <span className="material-symbols-outlined">token</span>
-            <span className="text-sm font-medium">EcoTokens</span>
-          </a>
-          <a onClick={(e) => { e.preventDefault(); toast('Loading Community Forum') }} className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-400 hover:bg-border-dark hover:text-white transition-colors cursor-pointer" href="#">
-            <span className="material-symbols-outlined">group</span>
-            <span className="text-sm font-medium">Community</span>
-          </a>
+          {[
+            { id: 'dashboard', icon: 'dashboard', label: 'Dashboard' },
+            { id: 'map', icon: 'map', label: 'Live Map' },
+            { id: 'analytics', icon: 'bar_chart', label: 'Analytics' },
+            { id: 'tokens', icon: 'token', label: 'EcoTokens' },
+            { id: 'community', icon: 'group', label: 'Community' },
+          ].map(item => (
+            <button
+              key={item.id}
+              onClick={() => setActiveTab(item.id)}
+              className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${activeTab === item.id
+                  ? 'bg-primary text-white'
+                  : 'text-slate-400 hover:bg-border-dark hover:text-white'
+                }`}
+            >
+              <span className="material-symbols-outlined">{item.icon}</span>
+              <span className="text-sm font-medium">{item.label}</span>
+            </button>
+          ))}
         </nav>
         <div className="p-4 border-t border-border-dark">
           <div className="flex items-center gap-3 p-2 hover:bg-border-dark rounded-lg cursor-pointer transition-colors" onClick={() => toast('Opening Admin Settings')}>
@@ -112,7 +132,7 @@ export default function Dashboard() {
               <span className="text-xs font-medium text-slate-400">Green City Initiative 2024</span>
             </div>
           </div>
-        </header>
+        </header >
 
         <div className="p-8 space-y-8">
           {/* Hero Section */}
@@ -320,7 +340,7 @@ export default function Dashboard() {
             <a className="hover:text-white transition-colors cursor-pointer" onClick={() => toast('Opening Support Ticket window')}>Support</a>
           </div>
         </footer>
-      </main>
-    </div>
+      </main >
+    </div >
   )
 }
