@@ -1,11 +1,12 @@
 import { create } from 'zustand';
+import { supabase } from '../lib/supabase';
 
 const generateId = () => 'ZW-' + Math.floor(1000 + Math.random() * 9000);
 
 // Helper function for local time
 const currentTime = () => new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-const useWasteStore = create((set) => ({
+const useWasteStore = create((set, get) => ({
     // Initial global state
     totalRecycledTons: 1284,
     ecoTokens: 450200,
@@ -31,10 +32,24 @@ const useWasteStore = create((set) => ({
         }
     ],
 
+    // Supabase Loaders (Will populate via database when configured)
+    fetchInitialData: async () => {
+        if (!supabase) return;
+        try {
+            const { data: batchesData, error: batchError } = await supabase.from('batches').select('*').order('created_at', { ascending: false });
+            if (!batchError && batchesData) {
+                // If tables are empty or missing, this silently proceeds using local defaults
+                if (batchesData.length > 0) set({ batches: batchesData });
+            }
+        } catch (e) {
+            console.warn('Supabase not fully setup yet:', e);
+        }
+    },
+
     // Actions
-    logCollection: (weight, source, type = 'MIXED') => set((state) => {
+    logCollection: async (weight, source, type = 'MIXED') => {
         const weightNum = parseFloat(weight);
-        if (isNaN(weightNum)) return state;
+        if (isNaN(weightNum)) return;
 
         const newBatch = {
             id: generateId(),
@@ -49,29 +64,55 @@ const useWasteStore = create((set) => ({
         const weightTons = weightNum / 1000;
         const tokensEarned = Math.floor(weightNum);
 
-        return {
+        // Optional Supabase DB Sync
+        if (supabase) {
+            try { await supabase.from('batches').insert([newBatch]); } catch (e) { }
+        }
+
+        set((state) => ({
             batches: [newBatch, ...state.batches],
             totalRecycledTons: +(state.totalRecycledTons + weightTons).toFixed(2),
             ecoTokens: state.ecoTokens + tokensEarned,
             userBalance: source === 'Citizen App' ? state.userBalance + tokensEarned : state.userBalance
-        };
-    }),
+        }));
+    },
 
-    processPending: () => set((state) => ({
-        batches: state.batches.map(b => b.status === 'PENDING' ? { ...b, status: 'Processing' } : b)
-    })),
+    processPending: async () => {
+        const { batches } = get();
 
-    verifyAndSort: (id) => set((state) => ({
-        batches: state.batches.map(b => b.id === id ? { ...b, status: 'Verified' } : b),
-        carbonOffset: state.carbonOffset + 5 // Arbitrary +5 offset per verified batch
-    })),
-
-    redeemTokens: (amount) => set((state) => {
-        if (state.userBalance >= amount) {
-            return { userBalance: state.userBalance - amount };
+        // Optional Supabase DB Sync
+        if (supabase) {
+            const pendingIds = batches.filter(b => b.status === 'PENDING').map(b => b.id);
+            try {
+                await supabase.from('batches').update({ status: 'Processing' }).in('id', pendingIds);
+            } catch (e) { }
         }
-        return state;
-    })
+
+        set((state) => ({
+            batches: state.batches.map(b => b.status === 'PENDING' ? { ...b, status: 'Processing' } : b)
+        }));
+    },
+
+    verifyAndSort: async (id) => {
+        // Optional Supabase DB Sync
+        if (supabase) {
+            try { await supabase.from('batches').update({ status: 'Verified' }).eq('id', id); } catch (e) { }
+        }
+
+        set((state) => ({
+            batches: state.batches.map(b => b.id === id ? { ...b, status: 'Verified' } : b),
+            carbonOffset: state.carbonOffset + 5 // Arbitrary +5 offset per verified batch
+        }));
+    },
+
+    redeemTokens: async (amount) => {
+        const state = get();
+        if (state.userBalance >= amount) {
+            const newBalance = state.userBalance - amount;
+            // Optionally sync balance update to DB Profile here...
+            set({ userBalance: newBalance });
+        }
+    }
 }));
 
 export default useWasteStore;

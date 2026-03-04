@@ -76,9 +76,17 @@ function Home() {
     );
 }
 
+import { Toaster } from 'react-hot-toast';
+import useWasteStore from './store/useWasteStore';
+
 export default function App() {
+    React.useEffect(() => {
+        useWasteStore.getState().fetchInitialData();
+    }, []);
+
     return (
         <BrowserRouter>
+            <Toaster position="top-right" />
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/municipality-dashboard" element={<Dashboard />} />
