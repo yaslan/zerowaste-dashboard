@@ -1,8 +1,18 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import toast from 'react-hot-toast'
 import useWasteStore from '../store/useWasteStore'
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts'
+import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet'
+import 'leaflet/dist/leaflet.css'
 import '../index.css'
+
+const mapMarkers = [
+  { lat: 41.0082, lng: 28.9784, label: 'Fatih District', density: 'High', weight: 1200, color: '#0bda46', radius: 18 },
+  { lat: 41.0370, lng: 28.9850, label: 'Beyoğlu District', density: 'Normal', weight: 850, color: '#7c3aed', radius: 12 },
+  { lat: 41.0500, lng: 29.0090, label: 'Beşiktaş District', density: 'High', weight: 2100, color: '#0bda46', radius: 22 },
+  { lat: 40.9900, lng: 29.0230, label: 'Kadıköy District', density: 'Normal', weight: 600, color: '#7c3aed', radius: 10 },
+  { lat: 41.0150, lng: 29.0600, label: 'Üsküdar District', density: 'Low', weight: 320, color: '#64748b', radius: 8 },
+];
 
 const pieData = [
   { name: 'Plastic', value: 42, color: '#60a5fa' },
@@ -174,18 +184,46 @@ export default function Dashboard() {
                   <option>Last 7 Days</option>
                 </select>
               </div>
-              <div className="relative flex-1 min-h-[400px] bg-slate-800">
-                <img className="w-full h-full object-cover opacity-60 grayscale brightness-50" data-alt="Modern dark satellite city map view" data-location="Metropolis Central" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAp6QTQdue1uLKJ513M1f6SHIIV4NV6rBYYtkrolPYyzF8Wuy-97zOg-QgjbbqVaqxaGw7C9l1eacAo_AOkRSRDgwR-_Gk634MEr_x1Z5z8K8maF8r3pMwoiVY0LgWZI4-B6zAxZZNlq3X5T2pV8YpFsNhGQUIvgTDnmGtJ3EzSgJCEw_Tw-V6zmJWFv8MWyoa58dxeaSm9w1ZjFq_zXApVe3AiWkVW3JiQm4dVm8sqXaq43id-6nqdYtBZzZOQEo5FhfIjSEjM3CY" alt="City Map" />
-                <div className="absolute top-1/4 left-1/3 size-16 bg-accent-green/30 rounded-full animate-[ping_3s_ease-in-out_infinite] flex items-center justify-center cursor-pointer" onClick={() => toast.success('District 1: High yield detected')}>
-                  <div className="size-4 bg-accent-green rounded-full shadow-[0_0_15px_#0bda46]"></div>
-                </div>
-                <div className="absolute bottom-1/3 right-1/4 size-24 bg-accent-green/20 rounded-full animate-[ping_4s_ease-in-out_infinite] flex items-center justify-center cursor-pointer" onClick={() => toast.success('District 4: Optimal flow')}>
-                  <div className="size-6 bg-accent-green rounded-full shadow-[0_0_20px_#0bda46]"></div>
-                </div>
-                <div className="absolute top-1/2 right-1/2 size-12 bg-primary/40 rounded-full flex items-center justify-center cursor-pointer hover:scale-110 transition-transform" onClick={() => toast('District 2: Sorting facility active')}>
-                  <div className="size-3 bg-primary-light rounded-full"></div>
-                </div>
-                <div className="absolute bottom-4 left-4 bg-background-dark/90 backdrop-blur p-3 rounded-lg border border-border-dark text-[10px] space-y-2">
+              <div className="relative flex-1 min-h-[400px]">
+                <MapContainer
+                  center={[41.015, 28.98]}
+                  zoom={12}
+                  scrollWheelZoom={true}
+                  style={{ height: '100%', width: '100%', minHeight: '400px' }}
+                  zoomControl={false}
+                >
+                  <TileLayer
+                    attribution='&copy; <a href="https://carto.com/">CARTO</a>'
+                    url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+                  />
+                  {mapMarkers.map((marker, i) => (
+                    <CircleMarker
+                      key={i}
+                      center={[marker.lat, marker.lng]}
+                      radius={marker.radius}
+                      pathOptions={{
+                        color: marker.color,
+                        fillColor: marker.color,
+                        fillOpacity: 0.35,
+                        weight: 2,
+                      }}
+                      eventHandlers={{
+                        click: () => toast.success(`${marker.label}: ${marker.weight} kg collected`),
+                      }}
+                    >
+                      <Popup>
+                        <div style={{ color: '#0f172a', fontFamily: 'Inter, sans-serif' }}>
+                          <strong>{marker.label}</strong><br />
+                          Density: <span style={{ color: marker.color, fontWeight: 'bold' }}>{marker.density}</span><br />
+                          Weight: {marker.weight} kg
+                        </div>
+                      </Popup>
+                    </CircleMarker>
+                  ))}
+                </MapContainer>
+
+                {/* Legend overlay */}
+                <div className="absolute bottom-4 left-4 z-[1000] bg-background-dark/90 backdrop-blur p-3 rounded-lg border border-border-dark text-[10px] space-y-2">
                   <p className="font-bold uppercase tracking-wider text-slate-500 mb-2">Density Legend</p>
                   <div className="flex items-center gap-2">
                     <span className="size-2 rounded-full bg-accent-green"></span> <span>High Activity</span>
@@ -278,21 +316,21 @@ export default function Dashboard() {
                       <td className="px-6 py-4 text-white hover:text-primary transition-colors">{batch.source}</td>
                       <td className="px-6 py-4">
                         <span className={`px-2 py-1 rounded text-xs font-bold ${batch.type.includes('PLASTIC') ? 'bg-blue-500/10 text-blue-400' :
-                            batch.type.includes('GLASS') ? 'bg-accent-green/10 text-accent-green' :
-                              batch.type.includes('PAPER') ? 'bg-amber-500/10 text-amber-400' :
-                                'bg-slate-500/10 text-slate-400'
+                          batch.type.includes('GLASS') ? 'bg-accent-green/10 text-accent-green' :
+                            batch.type.includes('PAPER') ? 'bg-amber-500/10 text-amber-400' :
+                              'bg-slate-500/10 text-slate-400'
                           }`}>{batch.type}</span>
                       </td>
                       <td className="px-6 py-4 text-white">{batch.weight} kg</td>
                       <td className="px-6 py-4 font-bold text-accent-green">+{Math.floor(batch.weight)} ET</td>
                       <td className="px-6 py-4">
                         <span className={`flex items-center gap-2 ${batch.status === 'Verified' ? 'text-accent-green' :
-                            batch.status === 'Processing' ? 'text-primary-light animate-pulse' :
-                              'text-amber-400'
+                          batch.status === 'Processing' ? 'text-primary-light animate-pulse' :
+                            'text-amber-400'
                           }`}>
                           <span className={`size-1.5 rounded-full ${batch.status === 'Verified' ? 'bg-accent-green' :
-                              batch.status === 'Processing' ? 'bg-primary-light' :
-                                'bg-amber-400'
+                            batch.status === 'Processing' ? 'bg-primary-light' :
+                              'bg-amber-400'
                             }`}></span>
                           {batch.status}
                         </span>
