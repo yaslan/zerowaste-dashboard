@@ -1,6 +1,43 @@
-import React from 'react';
+import React, { useState } from 'react';
+import toast from 'react-hot-toast';
 
 export default function CollectorPickupTool() {
+    const [weight, setWeight] = useState('');
+    const [pickups, setPickups] = useState([
+        { id: 1, address: '1248 Oakwood St.', type: 'Industrial Waste • 2 Large Bins', status: 'In Progress' },
+        { id: 2, address: '902 Pine Avenue', type: 'Residential • 1 Standard Bin', status: 'Pending' },
+        { id: 3, address: 'Community Park A', type: 'Recycling Center • 4 Bins', status: 'Pending' }
+    ]);
+
+    const handleScan = () => {
+        toast.success('QR Code successfully scanned!\nCustomer verified.', { duration: 3000 });
+    };
+
+    const handleLogWeight = () => {
+        if (!weight) {
+            toast.error('Please enter a weight first.');
+            return;
+        }
+
+        const loadToast = toast.loading('Logging weight to blockchain...');
+
+        setTimeout(() => {
+            toast.success(`${weight} KG logged successfully!`, { id: loadToast });
+
+            // Move to next pickup
+            setPickups(prev => {
+                if (prev.length === 0) return prev;
+                const newPickups = [...prev];
+                newPickups.shift(); // Remove current
+                if (newPickups.length > 0) {
+                    newPickups[0].status = 'In Progress';
+                }
+                return newPickups;
+            });
+            setWeight('');
+        }, 1500);
+    };
+
     return (
         <div className="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
             {/* Header */}
@@ -15,7 +52,7 @@ export default function CollectorPickupTool() {
                     </div>
                 </div>
                 <div className="flex gap-2">
-                    <button className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary dark:text-slate-100">
+                    <button onClick={() => toast("No new notifications")} className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary dark:text-slate-100">
                         <span className="material-symbols-outlined">notifications</span>
                     </button>
                     <button className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary dark:text-slate-100">
@@ -29,7 +66,7 @@ export default function CollectorPickupTool() {
                 <div className="p-4">
                     <div className="relative group h-48 w-full rounded-xl overflow-hidden border border-primary/20 bg-slate-200 dark:bg-slate-800">
                         <div
-                            className="absolute inset-0 bg-cover bg-center"
+                            className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 group-hover:scale-105"
                             style={{ backgroundImage: `url('https://lh3.googleusercontent.com/aida-public/AB6AXuAQJCu7JE26V-rS4u-rxHsJEYzZnJ8FvshSDm9YhNBlpeR6KbF9ARfBNQfpgxS4nRTd77SvPB6DrZ3xZfsm7kvYLvt4uSMDkUWMFR5KjR28jjltA5uf-bMITlKSjkiTUDbYNvzDPPHXAZ5mBztuLqx2gBV0BoyWJ37wFCc6_DgCX_LqDQG_ULC-8kgwS2mrXxKRguW-odCQslXdP4KtDhmKzSo-An0Wt3TFZ7iNP5mEo6A9v8bsJNL8JEGdlfUg3ILiiV08GB2DQYo')` }}
                         ></div>
                         <div className="absolute top-3 left-3 bg-background-dark/80 backdrop-blur px-3 py-1.5 rounded-lg border border-primary/30 flex items-center gap-2">
@@ -37,7 +74,7 @@ export default function CollectorPickupTool() {
                             <span className="text-xs font-bold text-white uppercase">Route Active</span>
                         </div>
                         <div className="absolute bottom-3 right-3">
-                            <button className="bg-primary text-white p-3 rounded-full shadow-xl flex items-center justify-center">
+                            <button onClick={() => toast.success("Location centered")} className="bg-primary text-white p-3 rounded-full shadow-xl flex items-center justify-center active:scale-95 transition-transform">
                                 <span className="material-symbols-outlined">my_location</span>
                             </button>
                         </div>
@@ -47,8 +84,8 @@ export default function CollectorPickupTool() {
                 {/* Scan & Log Actions */}
                 <div className="px-4 py-2 grid grid-cols-1 gap-4">
                     {/* Scan QR Button - High Contrast */}
-                    <button className="flex items-center justify-center gap-4 bg-primary text-white p-6 rounded-xl shadow-lg active:scale-95 transition-transform">
-                        <span className="material-symbols-outlined !text-4xl">qr_code_scanner</span>
+                    <button onClick={handleScan} className="flex items-center justify-center gap-4 bg-primary text-white p-6 rounded-xl shadow-lg active:scale-95 transition-transform">
+                        <span className="material-symbols-outlined !text-4xl animate-pulse">qr_code_scanner</span>
                         <div className="text-left">
                             <p className="text-xl font-bold">Scan Bin QR</p>
                             <p className="text-sm opacity-80">Identify customer & waste type</p>
@@ -61,9 +98,15 @@ export default function CollectorPickupTool() {
                         <div className="flex gap-2">
                             <div className="relative flex-1">
                                 <span className="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-primary/60">scale</span>
-                                <input className="w-full bg-white dark:bg-slate-900 border-2 border-primary/20 rounded-lg py-4 pl-10 pr-4 text-2xl font-bold focus:border-primary outline-none text-slate-900 dark:text-slate-100" placeholder="00.00" type="number" />
+                                <input
+                                    value={weight}
+                                    onChange={(e) => setWeight(e.target.value)}
+                                    className="w-full bg-white dark:bg-slate-900 border-2 border-primary/20 rounded-lg py-4 pl-10 pr-4 text-2xl font-bold focus:border-primary outline-none text-slate-900 dark:text-slate-100"
+                                    placeholder="00.00"
+                                    type="number"
+                                />
                             </div>
-                            <button className="bg-primary/20 hover:bg-primary/30 text-primary dark:text-slate-100 px-6 font-bold rounded-lg border border-primary/30">
+                            <button onClick={handleLogWeight} className="bg-primary/20 hover:bg-primary hover:text-white transition-colors text-primary dark:text-slate-100 px-6 font-bold rounded-lg border border-primary/30">
                                 LOG
                             </button>
                         </div>
@@ -74,42 +117,39 @@ export default function CollectorPickupTool() {
                 <div className="px-4 mt-6">
                     <div className="flex items-center justify-between mb-4">
                         <h2 className="text-slate-900 dark:text-slate-100 text-xl font-bold">Scheduled Pickups</h2>
-                        <span className="bg-primary/20 text-primary dark:text-slate-300 text-xs font-bold px-2 py-1 rounded">8 REMAINING</span>
+                        <span className="bg-primary/20 text-primary dark:text-slate-300 text-xs font-bold px-2 py-1 rounded">{pickups.length > 0 ? `${pickups.length + 5} REMAINING` : 'DONE'}</span>
                     </div>
 
                     <div className="space-y-3">
-                        {/* Active Item */}
-                        <div className="flex items-center gap-4 bg-primary/10 dark:bg-primary/20 border-l-4 border-primary p-4 rounded-lg">
-                            <div className="flex-1">
-                                <div className="flex items-center gap-2 mb-1">
-                                    <span className="text-xs font-bold text-primary dark:text-primary uppercase tracking-widest">In Progress</span>
-                                    <div className="size-2 rounded-full bg-primary animate-pulse"></div>
+                        {pickups.length === 0 && (
+                            <div className="p-8 text-center border-2 border-dashed border-primary/30 rounded-xl text-slate-500">
+                                <span className="material-symbols-outlined text-4xl text-accent-green mb-2">check_circle</span>
+                                <p className="font-bold">All caught up!</p>
+                            </div>
+                        )}
+                        {pickups.map((pickup, index) => (
+                            <div key={pickup.id} className={`flex items-center gap-4 ${pickup.status === 'In Progress' ? 'bg-primary/10 dark:bg-primary/20 border-l-4 border-primary' : 'bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 opacity-80'} p-4 rounded-lg transition-all`}>
+                                <div className="flex-1">
+                                    {pickup.status === 'In Progress' && (
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <span className="text-xs font-bold text-primary dark:text-primary uppercase tracking-widest">In Progress</span>
+                                            <div className="size-2 rounded-full bg-primary animate-pulse"></div>
+                                        </div>
+                                    )}
+                                    <p className="text-slate-900 dark:text-slate-100 text-base font-bold">{pickup.address}</p>
+                                    <p className="text-slate-500 dark:text-slate-400 text-sm">{pickup.type}</p>
                                 </div>
-                                <p className="text-slate-900 dark:text-slate-100 text-base font-bold">1248 Oakwood St.</p>
-                                <p className="text-slate-500 dark:text-slate-400 text-sm">Industrial Waste • 2 Large Bins</p>
+                                {pickup.status === 'In Progress' ? (
+                                    <button onClick={() => toast.success("Navigating to " + pickup.address)} className="flex size-10 items-center justify-center rounded-full bg-primary text-white hover:scale-110 transition-transform">
+                                        <span className="material-symbols-outlined">directions</span>
+                                    </button>
+                                ) : index === 1 && (
+                                    <div className="text-right">
+                                        <p className="text-xs font-bold text-slate-400">NEXT</p>
+                                    </div>
+                                )}
                             </div>
-                            <button className="flex size-10 items-center justify-center rounded-full bg-primary text-white">
-                                <span className="material-symbols-outlined">directions</span>
-                            </button>
-                        </div>
-
-                        {/* Upcoming Items */}
-                        <div className="flex items-center gap-4 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-4 rounded-lg">
-                            <div className="flex-1">
-                                <p className="text-slate-900 dark:text-slate-100 text-base font-semibold">902 Pine Avenue</p>
-                                <p className="text-slate-500 dark:text-slate-400 text-sm">Residential • 1 Standard Bin</p>
-                            </div>
-                            <div className="text-right">
-                                <p className="text-xs font-bold text-slate-400">NEXT</p>
-                            </div>
-                        </div>
-
-                        <div className="flex items-center gap-4 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-4 rounded-lg opacity-80">
-                            <div className="flex-1">
-                                <p className="text-slate-900 dark:text-slate-100 text-base font-semibold">Community Park A</p>
-                                <p className="text-slate-500 dark:text-slate-400 text-sm">Recycling Center • 4 Bins</p>
-                            </div>
-                        </div>
+                        ))}
                     </div>
                 </div>
             </main>
@@ -121,15 +161,15 @@ export default function CollectorPickupTool() {
                         <span className="material-symbols-outlined !text-[28px] fill-[1]">map</span>
                         <p className="text-xs font-bold leading-normal tracking-wide">Route</p>
                     </a>
-                    <a className="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+                    <a onClick={(e) => { e.preventDefault(); toast("Route History Opened"); }} className="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 dark:text-slate-500 hover:text-primary transition-colors cursor-pointer" href="#">
                         <span className="material-symbols-outlined !text-[28px]">history</span>
                         <p className="text-xs font-medium leading-normal tracking-wide">History</p>
                     </a>
-                    <a className="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+                    <a onClick={(e) => { e.preventDefault(); toast("Reports coming soon"); }} className="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 dark:text-slate-500 hover:text-primary transition-colors cursor-pointer" href="#">
                         <span className="material-symbols-outlined !text-[28px]">bar_chart</span>
                         <p className="text-xs font-medium leading-normal tracking-wide">Reports</p>
                     </a>
-                    <a className="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+                    <a onClick={(e) => { e.preventDefault(); toast("Viewing Profile"); }} className="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 dark:text-slate-500 hover:text-primary transition-colors cursor-pointer" href="#">
                         <span className="material-symbols-outlined !text-[28px]">person</span>
                         <p className="text-xs font-medium leading-normal tracking-wide">Profile</p>
                     </a>

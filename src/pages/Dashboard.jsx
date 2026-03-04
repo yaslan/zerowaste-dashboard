@@ -1,7 +1,15 @@
 import { useState } from 'react'
+import toast from 'react-hot-toast'
 import '../index.css'
 
 export default function Dashboard() {
+  const handleExport = () => {
+    const id = toast.loading('Generating PDF Report...');
+    setTimeout(() => {
+      toast.success('Report successfully downloaded!', { id });
+    }, 2000);
+  };
+
   return (
     <div className="flex h-screen overflow-hidden">
       {/* Sidebar */}
@@ -17,25 +25,25 @@ export default function Dashboard() {
             <span className="material-symbols-outlined filled-icon">dashboard</span>
             <span className="text-sm font-medium">Dashboard</span>
           </a>
-          <a className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-400 hover:bg-border-dark hover:text-white transition-colors" href="#">
+          <a onClick={(e) => { e.preventDefault(); toast('Loading live map data...') }} className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-400 hover:bg-border-dark hover:text-white transition-colors cursor-pointer" href="#">
             <span className="material-symbols-outlined">map</span>
             <span className="text-sm font-medium">Live Map</span>
           </a>
-          <a className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-400 hover:bg-border-dark hover:text-white transition-colors" href="#">
+          <a onClick={(e) => { e.preventDefault(); toast('Fetching latest analytics...') }} className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-400 hover:bg-border-dark hover:text-white transition-colors cursor-pointer" href="#">
             <span className="material-symbols-outlined">bar_chart</span>
             <span className="text-sm font-medium">Analytics</span>
           </a>
-          <a className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-400 hover:bg-border-dark hover:text-white transition-colors" href="#">
+          <a onClick={(e) => { e.preventDefault(); toast('EcoTokens smart contract online', { icon: '🟢' }) }} className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-400 hover:bg-border-dark hover:text-white transition-colors cursor-pointer" href="#">
             <span className="material-symbols-outlined">token</span>
             <span className="text-sm font-medium">EcoTokens</span>
           </a>
-          <a className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-400 hover:bg-border-dark hover:text-white transition-colors" href="#">
+          <a onClick={(e) => { e.preventDefault(); toast('Loading Community Forum') }} className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-400 hover:bg-border-dark hover:text-white transition-colors cursor-pointer" href="#">
             <span className="material-symbols-outlined">group</span>
             <span className="text-sm font-medium">Community</span>
           </a>
         </nav>
         <div className="p-4 border-t border-border-dark">
-          <div className="flex items-center gap-3 p-2">
+          <div className="flex items-center gap-3 p-2 hover:bg-border-dark rounded-lg cursor-pointer transition-colors" onClick={() => toast('Opening Admin Settings')}>
             <div className="size-10 rounded-full bg-primary/30 flex items-center justify-center text-primary-light">
               <span className="material-symbols-outlined">account_circle</span>
             </div>
@@ -59,13 +67,13 @@ export default function Dashboard() {
             </div>
           </div>
           <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2 px-3 py-1 bg-primary/20 rounded-full border border-primary/30">
-              <span className="size-2 rounded-full bg-accent-green"></span>
+            <div className="flex items-center gap-2 px-3 py-1 bg-primary/20 rounded-full border border-primary/30 cursor-pointer pointer-events-auto hover:bg-primary/30 transition-colors" onClick={() => toast.success('All blockchain nodes synchronized.')}>
+              <span className="size-2 rounded-full bg-accent-green animate-pulse"></span>
               <span className="text-xs font-medium text-accent-green">System Live</span>
             </div>
-            <button className="relative text-slate-400 hover:text-white">
+            <button onClick={() => toast('No unread priority alerts')} className="relative text-slate-400 hover:text-white transition-colors cursor-pointer">
               <span className="material-symbols-outlined">notifications</span>
-              <span className="absolute -top-1 -right-1 size-2 bg-red-500 rounded-full"></span>
+              <span className="absolute -top-1 -right-1 size-2 bg-red-500 rounded-full animate-pulse"></span>
             </button>
             <div className="h-8 w-[1px] bg-border-dark"></div>
             <div className="flex items-center gap-2">
@@ -82,10 +90,10 @@ export default function Dashboard() {
               <p className="text-slate-400">Real-time municipality recycling goals and environmental impact tracking.</p>
             </div>
             <div className="flex gap-3">
-              <button className="flex items-center gap-2 px-4 py-2 bg-surface-dark border border-border-dark rounded-lg text-sm font-medium hover:bg-primary/20 transition-colors">
+              <button onClick={handleExport} className="flex items-center gap-2 px-4 py-2 bg-surface-dark border border-border-dark rounded-lg text-sm font-medium hover:bg-primary/20 hover:border-primary/50 transition-all">
                 <span className="material-symbols-outlined text-sm">download</span> Export Report
               </button>
-              <button className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg text-sm font-bold shadow-lg shadow-primary/20 hover:bg-primary-light transition-colors">
+              <button onClick={() => toast('Feature: Assigning new collectors...')} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg text-sm font-bold shadow-lg shadow-primary/20 hover:bg-primary-light active:scale-95 transition-all">
                 <span className="material-symbols-outlined text-sm">add</span> New Task
               </button>
             </div>
@@ -93,7 +101,7 @@ export default function Dashboard() {
 
           {/* KPI Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-surface-dark p-6 rounded-xl border border-border-dark flex flex-col gap-4">
+            <div className="bg-surface-dark p-6 rounded-xl border border-border-dark flex flex-col gap-4 hover:border-primary/50 transition-colors cursor-pointer" onClick={() => toast('Displaying recycled volume trends...')}>
               <div className="flex justify-between items-start">
                 <div className="bg-primary/30 p-2 rounded-lg text-primary-light">
                   <span className="material-symbols-outlined filled-icon">delete_sweep</span>
@@ -105,7 +113,7 @@ export default function Dashboard() {
                 <p className="text-3xl font-black text-white">1,284 <span className="text-lg font-normal text-slate-500">Tons</span></p>
               </div>
             </div>
-            <div className="bg-surface-dark p-6 rounded-xl border border-border-dark flex flex-col gap-4">
+            <div className="bg-surface-dark p-6 rounded-xl border border-border-dark flex flex-col gap-4 hover:border-primary/50 transition-colors cursor-pointer" onClick={() => toast('Displaying Token Distribution...')}>
               <div className="flex justify-between items-start">
                 <div className="bg-primary/30 p-2 rounded-lg text-primary-light">
                   <span className="material-symbols-outlined filled-icon">generating_tokens</span>
@@ -117,7 +125,7 @@ export default function Dashboard() {
                 <p className="text-3xl font-black text-white">450,200 <span className="text-lg font-normal text-slate-500">ET</span></p>
               </div>
             </div>
-            <div className="bg-surface-dark p-6 rounded-xl border border-border-dark flex flex-col gap-4">
+            <div className="bg-surface-dark p-6 rounded-xl border border-border-dark flex flex-col gap-4 hover:border-primary/50 transition-colors cursor-pointer" onClick={() => toast('Displaying Carbon offset goals...')}>
               <div className="flex justify-between items-start">
                 <div className="bg-primary/30 p-2 rounded-lg text-primary-light">
                   <span className="material-symbols-outlined filled-icon">co2</span>
@@ -140,20 +148,20 @@ export default function Dashboard() {
                   <h3 className="font-bold text-lg">City Collection Density</h3>
                   <p className="text-xs text-slate-500">Live heatmap of waste pickup requests across districts</p>
                 </div>
-                <select className="bg-background-dark border-border-dark rounded-lg text-xs py-1 px-3 focus:ring-primary outline-none text-slate-400">
+                <select onChange={(e) => toast(`Map timeframe changed to: ${e.target.value}`)} className="bg-background-dark border-border-dark rounded-lg text-xs py-1 px-3 focus:ring-primary outline-none text-slate-400 cursor-pointer">
                   <option>Last 24 Hours</option>
                   <option>Last 7 Days</option>
                 </select>
               </div>
               <div className="relative flex-1 min-h-[400px] bg-slate-800">
                 <img className="w-full h-full object-cover opacity-60 grayscale brightness-50" data-alt="Modern dark satellite city map view" data-location="Metropolis Central" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAp6QTQdue1uLKJ513M1f6SHIIV4NV6rBYYtkrolPYyzF8Wuy-97zOg-QgjbbqVaqxaGw7C9l1eacAo_AOkRSRDgwR-_Gk634MEr_x1Z5z8K8maF8r3pMwoiVY0LgWZI4-B6zAxZZNlq3X5T2pV8YpFsNhGQUIvgTDnmGtJ3EzSgJCEw_Tw-V6zmJWFv8MWyoa58dxeaSm9w1ZjFq_zXApVe3AiWkVW3JiQm4dVm8sqXaq43id-6nqdYtBZzZOQEo5FhfIjSEjM3CY" alt="City Map" />
-                <div className="absolute top-1/4 left-1/3 size-16 bg-accent-green/30 rounded-full animate-pulse flex items-center justify-center">
+                <div className="absolute top-1/4 left-1/3 size-16 bg-accent-green/30 rounded-full animate-[ping_3s_ease-in-out_infinite] flex items-center justify-center cursor-pointer" onClick={() => toast.success('District 1: High yield detected')}>
                   <div className="size-4 bg-accent-green rounded-full shadow-[0_0_15px_#0bda46]"></div>
                 </div>
-                <div className="absolute bottom-1/3 right-1/4 size-24 bg-accent-green/20 rounded-full animate-pulse flex items-center justify-center">
+                <div className="absolute bottom-1/3 right-1/4 size-24 bg-accent-green/20 rounded-full animate-[ping_4s_ease-in-out_infinite] flex items-center justify-center cursor-pointer" onClick={() => toast.success('District 4: Optimal flow')}>
                   <div className="size-6 bg-accent-green rounded-full shadow-[0_0_20px_#0bda46]"></div>
                 </div>
-                <div className="absolute top-1/2 right-1/2 size-12 bg-primary/40 rounded-full flex items-center justify-center">
+                <div className="absolute top-1/2 right-1/2 size-12 bg-primary/40 rounded-full flex items-center justify-center cursor-pointer hover:scale-110 transition-transform" onClick={() => toast('District 2: Sorting facility active')}>
                   <div className="size-3 bg-primary-light rounded-full"></div>
                 </div>
                 <div className="absolute bottom-4 left-4 bg-background-dark/90 backdrop-blur p-3 rounded-lg border border-border-dark text-[10px] space-y-2">
@@ -179,50 +187,50 @@ export default function Dashboard() {
               </div>
               <div className="p-6 flex-1 flex flex-col justify-around">
                 <div className="space-y-6">
-                  <div className="space-y-2">
+                  <div className="space-y-2 group cursor-pointer" onClick={() => toast('Opening Plastic recycling breakdown')}>
                     <div className="flex justify-between text-sm">
-                      <span className="flex items-center gap-2"><span className="size-2 rounded-full bg-blue-400"></span> Plastic</span>
-                      <span className="font-bold">42%</span>
+                      <span className="flex items-center gap-2 group-hover:text-blue-400 transition-colors"><span className="size-2 rounded-full bg-blue-400"></span> Plastic</span>
+                      <span className="font-bold text-white">42%</span>
                     </div>
                     <div className="h-2 w-full bg-background-dark rounded-full overflow-hidden">
                       <div className="h-full bg-blue-400 rounded-full" style={{ width: '42%' }}></div>
                     </div>
                   </div>
-                  <div className="space-y-2">
+                  <div className="space-y-2 group cursor-pointer" onClick={() => toast('Opening Paper recycling breakdown')}>
                     <div className="flex justify-between text-sm">
-                      <span className="flex items-center gap-2"><span className="size-2 rounded-full bg-amber-400"></span> Paper</span>
-                      <span className="font-bold">28%</span>
+                      <span className="flex items-center gap-2 group-hover:text-amber-400 transition-colors"><span className="size-2 rounded-full bg-amber-400"></span> Paper</span>
+                      <span className="font-bold text-white">28%</span>
                     </div>
                     <div className="h-2 w-full bg-background-dark rounded-full overflow-hidden">
                       <div className="h-full bg-amber-400 rounded-full" style={{ width: '28%' }}></div>
                     </div>
                   </div>
-                  <div className="space-y-2">
+                  <div className="space-y-2 group cursor-pointer" onClick={() => toast('Opening Glass recycling breakdown')}>
                     <div className="flex justify-between text-sm">
-                      <span className="flex items-center gap-2"><span className="size-2 rounded-full bg-accent-green"></span> Glass</span>
-                      <span className="font-bold">18%</span>
+                      <span className="flex items-center gap-2 group-hover:text-accent-green transition-colors"><span className="size-2 rounded-full bg-accent-green"></span> Glass</span>
+                      <span className="font-bold text-white">18%</span>
                     </div>
                     <div className="h-2 w-full bg-background-dark rounded-full overflow-hidden">
                       <div className="h-full bg-accent-green rounded-full" style={{ width: '18%' }}></div>
                     </div>
                   </div>
-                  <div className="space-y-2">
+                  <div className="space-y-2 group cursor-pointer" onClick={() => toast('Opening Other materials breakdown')}>
                     <div className="flex justify-between text-sm">
-                      <span className="flex items-center gap-2"><span className="size-2 rounded-full bg-slate-500"></span> Other</span>
-                      <span className="font-bold">12%</span>
+                      <span className="flex items-center gap-2 group-hover:text-slate-300 transition-colors"><span className="size-2 rounded-full bg-slate-500"></span> Other</span>
+                      <span className="font-bold text-white">12%</span>
                     </div>
                     <div className="h-2 w-full bg-background-dark rounded-full overflow-hidden">
                       <div className="h-full bg-slate-500 rounded-full" style={{ width: '12%' }}></div>
                     </div>
                   </div>
                 </div>
-                <div className="mt-8 p-4 bg-primary/10 rounded-xl border border-primary/20">
+                <div className="mt-8 p-4 bg-primary/10 rounded-xl border border-primary/20 hover:bg-primary/20 transition-colors cursor-pointer" onClick={() => toast('Deploying new bins to Central Plaza...', { icon: '🚚' })}>
                   <div className="flex items-center gap-3 text-accent-green mb-2">
                     <span className="material-symbols-outlined text-sm">tips_and_updates</span>
                     <span className="text-xs font-bold uppercase tracking-wider">Optimization Insight</span>
                   </div>
                   <p className="text-xs text-slate-300 leading-relaxed">
-                    Plastic collection increased by 15% in District 4. Consider deploying additional bins to "Central Plaza" zone.
+                    Plastic collection increased by 15% in District 4. Consider deploying additional bins to "Central Plaza" zone. Click to action.
                   </p>
                 </div>
               </div>
@@ -233,11 +241,11 @@ export default function Dashboard() {
           <div className="bg-surface-dark rounded-xl border border-border-dark overflow-hidden">
             <div className="p-6 border-b border-border-dark flex items-center justify-between">
               <h3 className="font-bold text-lg">Recent Collections</h3>
-              <button className="text-primary-light hover:text-accent-green text-sm font-medium transition-colors">View All</button>
+              <button onClick={() => toast('Loading full collection history...')} className="text-primary-light hover:text-accent-green text-sm font-medium transition-colors">View All</button>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
-                <thead className="bg-background-dark/50 text-slate-500 font-medium">
+                <thead className="bg-background-dark/50 text-slate-500 font-medium whitespace-nowrap">
                   <tr>
                     <th className="px-6 py-4">Pickup ID</th>
                     <th className="px-6 py-4">District</th>
@@ -248,7 +256,7 @@ export default function Dashboard() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border-dark">
-                  <tr className="hover:bg-primary/5 transition-colors">
+                  <tr className="hover:bg-primary/5 transition-colors cursor-pointer" onClick={(e) => toast(`Tracking Pickup #ZW-9821`)}>
                     <td className="px-6 py-4 font-mono text-slate-400">#ZW-9821</td>
                     <td className="px-6 py-4 text-white">North Hillside</td>
                     <td className="px-6 py-4"><span className="px-2 py-1 bg-blue-500/10 text-blue-400 rounded text-xs">Plastic</span></td>
@@ -260,7 +268,7 @@ export default function Dashboard() {
                       </span>
                     </td>
                   </tr>
-                  <tr className="hover:bg-primary/5 transition-colors">
+                  <tr className="hover:bg-primary/5 transition-colors cursor-pointer" onClick={(e) => toast(`Tracking Pickup #ZW-9822`)}>
                     <td className="px-6 py-4 font-mono text-slate-400">#ZW-9822</td>
                     <td className="px-6 py-4 text-white">East Harbor</td>
                     <td className="px-6 py-4"><span className="px-2 py-1 bg-accent-green/10 text-accent-green rounded text-xs">Glass</span></td>
@@ -272,7 +280,7 @@ export default function Dashboard() {
                       </span>
                     </td>
                   </tr>
-                  <tr className="hover:bg-primary/5 transition-colors">
+                  <tr className="hover:bg-primary/5 transition-colors cursor-pointer" onClick={(e) => toast(`Tracking Pickup #ZW-9823`)}>
                     <td className="px-6 py-4 font-mono text-slate-400">#ZW-9823</td>
                     <td className="px-6 py-4 text-white">Central Market</td>
                     <td className="px-6 py-4"><span className="px-2 py-1 bg-amber-500/10 text-amber-400 rounded text-xs">Paper</span></td>
@@ -280,11 +288,11 @@ export default function Dashboard() {
                     <td className="px-6 py-4 text-slate-500 font-bold">--</td>
                     <td className="px-6 py-4">
                       <span className="flex items-center gap-2 text-amber-400">
-                        <span className="size-1.5 rounded-full bg-amber-400"></span> In Progress
+                        <span className="size-1.5 rounded-full bg-amber-400 animate-pulse"></span> In Progress
                       </span>
                     </td>
                   </tr>
-                  <tr className="hover:bg-primary/5 transition-colors">
+                  <tr className="hover:bg-primary/5 transition-colors cursor-pointer" onClick={(e) => toast(`Tracking Pickup #ZW-9824`)}>
                     <td className="px-6 py-4 font-mono text-slate-400">#ZW-9824</td>
                     <td className="px-6 py-4 text-white">South Park</td>
                     <td className="px-6 py-4"><span className="px-2 py-1 bg-blue-500/10 text-blue-400 rounded text-xs">Plastic</span></td>
@@ -306,9 +314,9 @@ export default function Dashboard() {
         <footer className="p-8 border-t border-border-dark flex flex-col md:flex-row items-center justify-between text-slate-500 text-xs gap-4 mt-auto">
           <p>© 2024 ZeroWaste City Initiative. All rights reserved.</p>
           <div className="flex gap-6">
-            <a className="hover:text-white transition-colors" href="#">Privacy Policy</a>
-            <a className="hover:text-white transition-colors" href="#">API Documentation</a>
-            <a className="hover:text-white transition-colors" href="#">Support</a>
+            <a className="hover:text-white transition-colors cursor-pointer" onClick={() => toast('Privacy Policy downloaded')}>Privacy Policy</a>
+            <a className="hover:text-white transition-colors cursor-pointer" onClick={() => toast('Redirecting to Docs...')}>API Documentation</a>
+            <a className="hover:text-white transition-colors cursor-pointer" onClick={() => toast('Opening Support Ticket window')}>Support</a>
           </div>
         </footer>
       </main>

@@ -1,11 +1,46 @@
-import React from 'react';
+import React, { useState } from 'react';
+import toast from 'react-hot-toast';
 
 export default function RecyclingFacilityLog() {
+    const [autoRelease, setAutoRelease] = useState(true);
+    const [batches, setBatches] = useState([
+        { id: 'b1', source: 'GreenCity Muni', type: 'PLASTIC', weight: '1,200', time: '10:30 AM', status: 'PENDING' },
+        { id: 'b2', source: 'EcoCorp Industrial', type: 'METAL', weight: '3,500', time: '09:15 AM', status: 'Processing' },
+        { id: 'b3', source: 'BioClean Solutions', type: 'Organic', weight: '850', time: '08:45 AM', status: 'Verified' },
+        { id: 'b4', source: 'Urban Renew', type: 'Glass', weight: '2,100', time: '07:30 AM', status: 'Verified' }
+    ]);
+
+    const handleProcessBatch = () => {
+        const hasPending = batches.some(b => b.status === 'PENDING');
+        if (!hasPending) {
+            toast('No pending batches to process!', { icon: 'ℹ️' });
+            return;
+        }
+
+        const processToast = toast.loading('Processing pending batches...');
+
+        setTimeout(() => {
+            setBatches(prev => prev.map(b =>
+                b.status === 'PENDING' ? { ...b, status: 'Processing' } : b
+            ));
+            toast.success('Batches successfully sent to processing pipeline.', { id: processToast });
+        }, 1500);
+    };
+
+    const handleAutoReleaseToggle = () => {
+        setAutoRelease(!autoRelease);
+        if (!autoRelease) {
+            toast.success('Auto-Release Tokens Enabled');
+        } else {
+            toast('Auto-Release Tokens Disabled', { icon: '🔒' });
+        }
+    };
+
     return (
         <div className="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 transition-colors duration-300">
             <div className="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
                 {/* Top Navigation Bar */}
-                <header className="flex items-center justify-between border-b border-primary/20 bg-background-light dark:bg-background-dark px-6 py-4 lg:px-10">
+                <header className="flex items-center justify-between border-b border-primary/20 bg-background-light dark:bg-background-dark px-6 py-4 lg:px-10 z-10 sticky top-0">
                     <div className="flex items-center gap-8">
                         <div className="flex items-center gap-3 text-primary dark:text-slate-100">
                             <div className="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
@@ -21,10 +56,10 @@ export default function RecyclingFacilityLog() {
                         </div>
                     </div>
                     <div className="flex items-center gap-4">
-                        <button className="flex items-center justify-center rounded-lg h-10 w-10 bg-slate-200 dark:bg-primary/30 text-slate-700 dark:text-slate-100">
+                        <button onClick={() => toast('No new notifications')} className="flex items-center justify-center rounded-lg h-10 w-10 bg-slate-200 dark:bg-primary/30 text-slate-700 dark:text-slate-100 hover:bg-slate-300 dark:hover:bg-primary/50 transition-colors">
                             <span className="material-symbols-outlined">notifications</span>
                         </button>
-                        <button className="flex items-center justify-center rounded-lg h-10 w-10 bg-slate-200 dark:bg-primary/30 text-slate-700 dark:text-slate-100">
+                        <button onClick={() => toast('Settings opened')} className="flex items-center justify-center rounded-lg h-10 w-10 bg-slate-200 dark:bg-primary/30 text-slate-700 dark:text-slate-100 hover:bg-slate-300 dark:hover:bg-primary/50 transition-colors">
                             <span className="material-symbols-outlined">settings</span>
                         </button>
                         <div className="flex items-center gap-3 border-l border-primary/20 pl-4">
@@ -32,7 +67,7 @@ export default function RecyclingFacilityLog() {
                                 <p className="text-xs font-bold">Admin User</p>
                                 <p className="text-[10px] text-slate-500">Facility #102</p>
                             </div>
-                            <div className="bg-slate-300 dark:bg-primary size-10 rounded-full flex items-center justify-center">
+                            <div className="bg-slate-300 dark:bg-primary size-10 rounded-full flex items-center justify-center cursor-pointer hover:scale-105 transition-transform">
                                 <span className="material-symbols-outlined">person</span>
                             </div>
                         </div>
@@ -57,26 +92,13 @@ export default function RecyclingFacilityLog() {
                                     <span className="material-symbols-outlined">inventory_2</span>
                                     <span className="text-sm font-medium">Batch Management</span>
                                 </a>
-                                <a className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-primary/10 transition-colors" href="#">
+                                <a onClick={() => toast('Fetching ledger data...')} className="flex items-center cursor-pointer gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-primary/10 transition-colors" href="#">
                                     <span className="material-symbols-outlined">account_balance_wallet</span>
                                     <span className="text-sm font-medium">Blockchain Assets</span>
                                 </a>
                             </nav>
                         </div>
-                        <div className="flex flex-col gap-1">
-                            <h3 className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">Settings</h3>
-                            <nav className="flex flex-col gap-1">
-                                <a className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-primary/10 transition-colors" href="#">
-                                    <span className="material-symbols-outlined">analytics</span>
-                                    <span className="text-sm font-medium">Reports</span>
-                                </a>
-                                <a className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-primary/10 transition-colors" href="#">
-                                    <span className="material-symbols-outlined">help_center</span>
-                                    <span className="text-sm font-medium">Support</span>
-                                </a>
-                            </nav>
-                        </div>
-                        <div className="mt-auto p-4 bg-primary/5 rounded-xl border border-primary/10">
+                        <div className="mt-auto p-4 bg-primary/5 rounded-xl border border-primary/10 hover:border-primary/30 transition-colors cursor-pointer" onClick={() => toast.success('Sensors running optimally')}>
                             <p className="text-xs font-bold text-primary dark:text-slate-200">Facility Health</p>
                             <div className="mt-2 w-full bg-slate-200 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
                                 <div className="bg-primary h-full w-[85%]"></div>
@@ -94,14 +116,14 @@ export default function RecyclingFacilityLog() {
                                 <p className="text-slate-500 text-sm">Real-time recycling throughput and blockchain status.</p>
                             </div>
                             <div className="flex flex-wrap gap-3">
-                                <button className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg text-sm font-bold shadow-lg shadow-primary/20">
+                                <button onClick={handleProcessBatch} className="flex items-center gap-2 px-4 py-2 bg-primary text-white hover:bg-primary-light active:scale-95 transition-all rounded-lg text-sm font-bold shadow-lg shadow-primary/20">
                                     <span className="material-symbols-outlined text-lg">add</span>
                                     Process Batch
                                 </button>
                                 <div className="flex items-center gap-3 px-4 py-2 bg-slate-200 dark:bg-primary/20 rounded-lg border border-primary/20">
                                     <span className="text-xs font-bold uppercase text-slate-500">Auto-Release Tokens</span>
                                     <label className="relative inline-flex items-center cursor-pointer">
-                                        <input defaultChecked className="sr-only peer" type="checkbox" />
+                                        <input checked={autoRelease} onChange={handleAutoReleaseToggle} className="sr-only peer" type="checkbox" />
                                         <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
                                     </label>
                                 </div>
@@ -110,7 +132,7 @@ export default function RecyclingFacilityLog() {
 
                         {/* Stats Grid */}
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                            <div className="bg-white dark:bg-primary/10 p-5 rounded-xl border border-slate-200 dark:border-primary/20">
+                            <div className="bg-white dark:bg-primary/10 p-5 rounded-xl border border-slate-200 dark:border-primary/20 hover:border-primary/50 transition-colors">
                                 <p className="text-slate-500 text-xs font-bold uppercase tracking-wider">Total Intake</p>
                                 <h3 className="text-2xl font-bold mt-1">124.5 <span className="text-sm font-normal text-slate-500">Tons</span></h3>
                                 <div className="flex items-center mt-2 text-emerald-500 gap-1 text-sm font-medium">
@@ -118,25 +140,25 @@ export default function RecyclingFacilityLog() {
                                     12% from last week
                                 </div>
                             </div>
-                            <div className="bg-white dark:bg-primary/10 p-5 rounded-xl border border-slate-200 dark:border-primary/20">
+                            <div className="bg-white dark:bg-primary/10 p-5 rounded-xl border border-slate-200 dark:border-primary/20 hover:border-primary/50 transition-colors">
                                 <p className="text-slate-500 text-xs font-bold uppercase tracking-wider">Pending Verification</p>
                                 <h3 className="text-2xl font-bold mt-1">4,200 <span className="text-sm font-normal text-slate-500">RCT</span></h3>
                                 <div className="flex items-center mt-2 text-amber-500 gap-1 text-sm font-medium">
-                                    <span className="material-symbols-outlined text-sm">pending</span>
-                                    3 batches waiting
+                                    <span className="material-symbols-outlined text-sm animate-spin-slow">pending</span>
+                                    {batches.filter(b => b.status === 'PENDING').length} batches waiting
                                 </div>
                             </div>
-                            <div className="bg-white dark:bg-primary/10 p-5 rounded-xl border border-slate-200 dark:border-primary/20">
+                            <div className="bg-white dark:bg-primary/10 p-5 rounded-xl border border-slate-200 dark:border-primary/20 hover:border-primary/50 transition-colors">
                                 <p className="text-slate-500 text-xs font-bold uppercase tracking-wider">Blockchain Nodes</p>
                                 <h3 className="text-2xl font-bold mt-1">Active</h3>
                                 <div className="flex items-center mt-2 text-emerald-500 gap-1 text-sm font-medium">
-                                    <span className="material-symbols-outlined text-sm">check_circle</span>
+                                    <span className="material-symbols-outlined text-sm animate-pulse">check_circle</span>
                                     Syncing @ Block 12.4M
                                 </div>
                             </div>
-                            <div className="bg-white dark:bg-primary/10 p-5 rounded-xl border border-slate-200 dark:border-primary/20">
+                            <div className="bg-white dark:bg-primary/10 p-5 rounded-xl border border-slate-200 dark:border-primary/20 hover:border-primary/50 transition-colors">
                                 <p className="text-slate-500 text-xs font-bold uppercase tracking-wider">Active Batches</p>
-                                <h3 className="text-2xl font-bold mt-1">12</h3>
+                                <h3 className="text-2xl font-bold mt-1">{batches.length}</h3>
                                 <div className="flex items-center mt-2 text-rose-500 gap-1 text-sm font-medium">
                                     <span className="material-symbols-outlined text-sm">trending_down</span>
                                     -2% vs average
@@ -152,9 +174,9 @@ export default function RecyclingFacilityLog() {
                                         <span className="material-symbols-outlined text-primary">list_alt</span>
                                         Bulk Intake Log
                                     </h2>
-                                    <button className="text-primary dark:text-slate-300 text-sm font-medium hover:underline">View All Log</button>
+                                    <button onClick={() => toast('Opening full logs...')} className="text-primary dark:text-slate-300 text-sm font-medium hover:underline">View All</button>
                                 </div>
-                                <div className="bg-white dark:bg-background-dark/50 border border-slate-200 dark:border-primary/20 rounded-xl overflow-hidden">
+                                <div className="bg-white dark:bg-background-dark/50 border border-slate-200 dark:border-primary/20 rounded-xl overflow-hidden shadow-sm">
                                     <div className="overflow-x-auto">
                                         <table className="w-full text-left text-sm">
                                             <thead className="bg-slate-50 dark:bg-primary/20 text-slate-500 dark:text-slate-400 font-bold border-b border-slate-200 dark:border-primary/20 uppercase text-[10px]">
@@ -162,152 +184,38 @@ export default function RecyclingFacilityLog() {
                                                     <th className="px-6 py-3">Source</th>
                                                     <th className="px-6 py-3">Waste Type</th>
                                                     <th className="px-6 py-3">Weight (kg)</th>
-                                                    <th className="px-6 py-3">Timestamp</th>
                                                     <th className="px-6 py-3 text-right">Status</th>
                                                 </tr>
                                             </thead>
                                             <tbody className="divide-y divide-slate-100 dark:divide-primary/10">
-                                                <tr className="hover:bg-slate-50 dark:hover:bg-primary/5 transition-colors">
-                                                    <td className="px-6 py-4 font-medium">GreenCity Muni</td>
-                                                    <td className="px-6 py-4">
-                                                        <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded text-[11px] font-bold">PLASTIC</span>
-                                                    </td>
-                                                    <td className="px-6 py-4">1,200</td>
-                                                    <td className="px-6 py-4 text-slate-500">10:30 AM</td>
-                                                    <td className="px-6 py-4 text-right">
-                                                        <span className="px-2.5 py-1 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 rounded-full text-[11px] font-bold">PENDING</span>
-                                                    </td>
-                                                </tr>
-                                                <tr className="hover:bg-slate-50 dark:hover:bg-primary/5 transition-colors">
-                                                    <td className="px-6 py-4 font-medium">EcoCorp Industrial</td>
-                                                    <td className="px-6 py-4">
-                                                        <span className="px-2 py-1 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded text-[11px] font-bold">METAL</span>
-                                                    </td>
-                                                    <td className="px-6 py-4">3,500</td>
-                                                    <td className="px-6 py-4 text-slate-500">09:15 AM</td>
-                                                    <td className="px-6 py-4 text-right">
-                                                        <span className="px-2.5 py-1 bg-primary/20 text-primary dark:text-slate-200 rounded-full text-[11px] font-bold uppercase">Processing</span>
-                                                    </td>
-                                                </tr>
-                                                <tr className="hover:bg-slate-50 dark:hover:bg-primary/5 transition-colors">
-                                                    <td className="px-6 py-4 font-medium">BioClean Solutions</td>
-                                                    <td className="px-6 py-4">
-                                                        <span className="px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded text-[11px] font-bold uppercase">Organic</span>
-                                                    </td>
-                                                    <td className="px-6 py-4">850</td>
-                                                    <td className="px-6 py-4 text-slate-500">08:45 AM</td>
-                                                    <td className="px-6 py-4 text-right">
-                                                        <span className="px-2.5 py-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 rounded-full text-[11px] font-bold uppercase">Verified</span>
-                                                    </td>
-                                                </tr>
-                                                <tr className="hover:bg-slate-50 dark:hover:bg-primary/5 transition-colors">
-                                                    <td className="px-6 py-4 font-medium">Urban Renew</td>
-                                                    <td className="px-6 py-4">
-                                                        <span className="px-2 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded text-[11px] font-bold uppercase">Glass</span>
-                                                    </td>
-                                                    <td className="px-6 py-4">2,100</td>
-                                                    <td className="px-6 py-4 text-slate-500">07:30 AM</td>
-                                                    <td className="px-6 py-4 text-right">
-                                                        <span className="px-2.5 py-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 rounded-full text-[11px] font-bold uppercase">Verified</span>
-                                                    </td>
-                                                </tr>
+                                                {batches.map(batch => (
+                                                    <tr key={batch.id} className="hover:bg-slate-50 dark:hover:bg-primary/5 transition-colors group cursor-pointer" onClick={() => toast(`Viewing ${batch.id} details`)}>
+                                                        <td className="px-6 py-4">
+                                                            <div className="font-medium text-slate-900 dark:text-slate-100 group-hover:text-primary transition-colors">{batch.source}</div>
+                                                            <div className="text-xs text-slate-500">{batch.time}</div>
+                                                        </td>
+                                                        <td className="px-6 py-4">
+                                                            <span className={`px-2 py-1 rounded text-[11px] font-bold uppercase
+                                                                ${batch.type === 'PLASTIC' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' :
+                                                                    batch.type === 'METAL' ? 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300' :
+                                                                        batch.type === 'Organic' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300' :
+                                                                            'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300'}`}>
+                                                                {batch.type}
+                                                            </span>
+                                                        </td>
+                                                        <td className="px-6 py-4 font-mono">{batch.weight}</td>
+                                                        <td className="px-6 py-4 text-right">
+                                                            <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold uppercase
+                                                                ${batch.status === 'PENDING' ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300' :
+                                                                    batch.status === 'Processing' ? 'bg-primary/20 text-primary dark:text-slate-200' :
+                                                                        'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300'}`}>
+                                                                {batch.status}
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                ))}
                                             </tbody>
                                         </table>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Notifications Panel */}
-                            <div className="flex flex-col gap-4">
-                                <h2 className="text-lg font-bold flex items-center gap-2">
-                                    <span className="material-symbols-outlined text-primary">history_edu</span>
-                                    Contracts Executed
-                                </h2>
-                                <div className="space-y-3">
-                                    <div className="bg-white dark:bg-primary/10 border border-slate-200 dark:border-primary/20 rounded-xl p-4 flex gap-4">
-                                        <div className="shrink-0 size-10 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600">
-                                            <span className="material-symbols-outlined">receipt_long</span>
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <div className="flex justify-between items-start">
-                                                <h4 className="text-sm font-bold truncate">Contract #882-VER</h4>
-                                                <span className="text-[10px] text-slate-400">2m ago</span>
-                                            </div>
-                                            <p className="text-xs text-slate-500 mt-1 line-clamp-2">Token release for GreenCity Muni batch 002. 450 RCT minted.</p>
-                                            <div className="mt-2 flex items-center gap-2 text-[10px] text-primary dark:text-slate-300 font-mono">
-                                                <span className="material-symbols-outlined text-[12px]">link</span>
-                                                0x72a...f41
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="bg-white dark:bg-primary/10 border border-slate-200 dark:border-primary/20 rounded-xl p-4 flex gap-4 opacity-80">
-                                        <div className="shrink-0 size-10 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500">
-                                            <span className="material-symbols-outlined">receipt_long</span>
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <div className="flex justify-between items-start">
-                                                <h4 className="text-sm font-bold truncate">Contract #881-VER</h4>
-                                                <span className="text-[10px] text-slate-400">1h ago</span>
-                                            </div>
-                                            <p className="text-xs text-slate-500 mt-1 line-clamp-2">Bulk verification completed for 3 sources. 1,200 RCT minted.</p>
-                                            <div className="mt-2 flex items-center gap-2 text-[10px] text-primary dark:text-slate-300 font-mono">
-                                                <span className="material-symbols-outlined text-[12px]">link</span>
-                                                0x91b...e92
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="bg-white dark:bg-primary/10 border border-slate-200 dark:border-primary/20 rounded-xl p-4 flex gap-4 opacity-60">
-                                        <div className="shrink-0 size-10 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500">
-                                            <span className="material-symbols-outlined">receipt_long</span>
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <div className="flex justify-between items-start">
-                                                <h4 className="text-sm font-bold truncate">Contract #880-GEN</h4>
-                                                <span className="text-[10px] text-slate-400">4h ago</span>
-                                            </div>
-                                            <p className="text-xs text-slate-500 mt-1 line-clamp-2">Origin certificate generated for Urban Renew batch.</p>
-                                            <div className="mt-2 flex items-center gap-2 text-[10px] text-primary dark:text-slate-300 font-mono">
-                                                <span className="material-symbols-outlined text-[12px]">link</span>
-                                                0x44c...a31
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <button className="w-full py-2.5 text-xs font-bold text-slate-500 hover:text-primary transition-colors border-2 border-dashed border-slate-200 dark:border-primary/20 rounded-xl">
-                                        Load Full Audit Trail
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Operational Map/Location Section */}
-                        <div className="bg-primary/5 rounded-2xl p-6 border border-primary/10 overflow-hidden relative">
-                            <div className="relative z-10 flex flex-col md:flex-row gap-8 items-center">
-                                <div className="flex-1">
-                                    <h3 className="text-xl font-bold">Facility Active Nodes</h3>
-                                    <p className="text-slate-500 mt-2 text-sm leading-relaxed">
-                                        Currently monitoring 4 collection points and 2 logistics units within a 50-mile radius.
-                                        All IoT sensors are broadcasting waste telemetry to the main chain.
-                                    </p>
-                                    <div className="mt-6 flex flex-wrap gap-4">
-                                        <div className="flex items-center gap-2">
-                                            <div className="size-3 rounded-full bg-emerald-500"></div>
-                                            <span className="text-xs font-medium">Node 01 - Online</span>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <div className="size-3 rounded-full bg-emerald-500"></div>
-                                            <span className="text-xs font-medium">Node 02 - Online</span>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <div className="size-3 rounded-full bg-amber-500"></div>
-                                            <span className="text-xs font-medium">Logistic Hub 01 - Syncing</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="w-full md:w-80 h-48 rounded-xl bg-slate-200 dark:bg-primary/30 border border-primary/20 flex items-center justify-center relative overflow-hidden group">
-                                    <div className="absolute inset-0 bg-primary/20 opacity-40 mix-blend-overlay"></div>
-                                    <span className="material-symbols-outlined text-4xl text-primary/50 group-hover:scale-110 transition-transform">map</span>
-                                    <div className="absolute bottom-2 right-2 bg-white/90 dark:bg-black/90 px-2 py-1 rounded text-[10px] font-bold">
-                                        VIEW MAP
                                     </div>
                                 </div>
                             </div>
