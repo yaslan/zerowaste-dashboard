@@ -1,24 +1,18 @@
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
+import useWasteStore from '../store/useWasteStore';
 
 export default function SortingFacilityHub() {
-    const [batches, setBatches] = useState([
-        {
-            id: 'BX-9921', time: '2 min ago', source: 'City Collector A', weight: '450.5 kg',
-            img: "https://lh3.googleusercontent.com/aida-public/AB6AXuCwmvUDssXU1OftR7lp9aDKH1IRAxSggUOqRMFkBZzp_MtbJK6S_7L4_yP4LasVNvcTrLKGRIYYvX3DWsyXb3O-TgpjmJf6DgBeoIlfAEcLYHoSVVFPaxV88UqAwCC9YCpPkKL_IkTJiy3fZIVqxMJssLBUZbGZYO0CkN6idtatmr5h3Aq3ofJGhav9ma66-tX_rJmmukhqU5RmXGItMEiVA3DXcq4bwRhtkI0XUjpOVZLksXQ852mI_wd4zktfwloWfpDGkYGYmZE"
-        },
-        {
-            id: 'BX-9918', time: '14 min ago', source: 'District Hauler #4', weight: '128.0 kg',
-            img: "https://lh3.googleusercontent.com/aida-public/AB6AXuAQLoS4ksadUOEl_PUlIvHJ1sL-seM4tOx8IfDk__zLB6h9Io2YP51ugEacUFcs-tZ-CyLIly0XzK0y_WUKqWk6GvrAamVYHjzaMcD162yVxKHfuov5ZdIS_ZUitHvkzmuV2X5jKAGXeiblGZ_xKo1N9wxF4dqAsZ8sr2wInOKmPz6N-9s2-F_672uU2NyjYKWSz1sUrGHTnxKS5AR9-kcERLIrjNZwbStLGezT3XAYHxK9mXAo0m3FgA06Nnf0t38byS9eDjV628Q"
-        }
-    ]);
+    const allBatches = useWasteStore(state => state.batches);
+    const verifyAndSort = useWasteStore(state => state.verifyAndSort);
+    const batches = allBatches.filter(b => b.status === 'Processing');
 
     const handleVerifyAndSort = (id) => {
         const loadingToast = toast.loading(`Verifying Batch #${id}...`);
 
         setTimeout(() => {
             toast.success(`Batch #${id} successfully verified and sorted!`, { id: loadingToast });
-            setBatches(prev => prev.filter(b => b.id !== id));
+            verifyAndSort(id);
         }, 1200);
     };
 

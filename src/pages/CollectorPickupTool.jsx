@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
+import useWasteStore from '../store/useWasteStore';
 
 export default function CollectorPickupTool() {
     const [weight, setWeight] = useState('');
+    const logCollection = useWasteStore(state => state.logCollection);
+
     const [pickups, setPickups] = useState([
         { id: 1, address: '1248 Oakwood St.', type: 'Industrial Waste • 2 Large Bins', status: 'In Progress' },
         { id: 2, address: '902 Pine Avenue', type: 'Residential • 1 Standard Bin', status: 'Pending' },
@@ -23,6 +26,13 @@ export default function CollectorPickupTool() {
 
         setTimeout(() => {
             toast.success(`${weight} KG logged successfully!`, { id: loadToast });
+
+            // Send to global store
+            const currentPickup = pickups[0];
+            const wasteType = currentPickup?.type.includes('Industrial') ? 'METAL' :
+                currentPickup?.type.includes('Recycling') ? 'PAPER' : 'PLASTIC';
+
+            logCollection(weight, 'Collector App', wasteType);
 
             // Move to next pickup
             setPickups(prev => {

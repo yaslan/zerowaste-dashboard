@@ -1,8 +1,11 @@
 import { useState } from 'react'
 import toast from 'react-hot-toast'
+import useWasteStore from '../store/useWasteStore'
 import '../index.css'
 
 export default function Dashboard() {
+  const { totalRecycledTons, ecoTokens, carbonOffset } = useWasteStore();
+
   const handleExport = () => {
     const id = toast.loading('Generating PDF Report...');
     setTimeout(() => {
@@ -110,7 +113,7 @@ export default function Dashboard() {
               </div>
               <div>
                 <p className="text-slate-400 text-sm font-medium">Total Recycled</p>
-                <p className="text-3xl font-black text-white">1,284 <span className="text-lg font-normal text-slate-500">Tons</span></p>
+                <p className="text-3xl font-black text-white">{totalRecycledTons.toLocaleString()} <span className="text-lg font-normal text-slate-500">Tons</span></p>
               </div>
             </div>
             <div className="bg-surface-dark p-6 rounded-xl border border-border-dark flex flex-col gap-4 hover:border-primary/50 transition-colors cursor-pointer" onClick={() => toast('Displaying Token Distribution...')}>
@@ -122,7 +125,7 @@ export default function Dashboard() {
               </div>
               <div>
                 <p className="text-slate-400 text-sm font-medium">EcoTokens Distributed</p>
-                <p className="text-3xl font-black text-white">450,200 <span className="text-lg font-normal text-slate-500">ET</span></p>
+                <p className="text-3xl font-black text-white">{ecoTokens.toLocaleString()} <span className="text-lg font-normal text-slate-500">ET</span></p>
               </div>
             </div>
             <div className="bg-surface-dark p-6 rounded-xl border border-border-dark flex flex-col gap-4 hover:border-primary/50 transition-colors cursor-pointer" onClick={() => toast('Displaying Carbon offset goals...')}>
@@ -134,7 +137,7 @@ export default function Dashboard() {
               </div>
               <div>
                 <p className="text-slate-400 text-sm font-medium">Carbon Offset</p>
-                <p className="text-3xl font-black text-white">840 <span className="text-lg font-normal text-slate-500">MT CO2e</span></p>
+                <p className="text-3xl font-black text-white">{carbonOffset.toLocaleString()} <span className="text-lg font-normal text-slate-500">MT CO2e</span></p>
               </div>
             </div>
           </div>

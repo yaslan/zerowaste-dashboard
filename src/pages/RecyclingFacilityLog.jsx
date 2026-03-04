@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
+import useWasteStore from '../store/useWasteStore';
 
 export default function RecyclingFacilityLog() {
     const [autoRelease, setAutoRelease] = useState(true);
-    const [batches, setBatches] = useState([
-        { id: 'b1', source: 'GreenCity Muni', type: 'PLASTIC', weight: '1,200', time: '10:30 AM', status: 'PENDING' },
-        { id: 'b2', source: 'EcoCorp Industrial', type: 'METAL', weight: '3,500', time: '09:15 AM', status: 'Processing' },
-        { id: 'b3', source: 'BioClean Solutions', type: 'Organic', weight: '850', time: '08:45 AM', status: 'Verified' },
-        { id: 'b4', source: 'Urban Renew', type: 'Glass', weight: '2,100', time: '07:30 AM', status: 'Verified' }
-    ]);
+    const batches = useWasteStore(state => state.batches);
+    const processPending = useWasteStore(state => state.processPending);
 
     const handleProcessBatch = () => {
         const hasPending = batches.some(b => b.status === 'PENDING');
@@ -20,9 +17,7 @@ export default function RecyclingFacilityLog() {
         const processToast = toast.loading('Processing pending batches...');
 
         setTimeout(() => {
-            setBatches(prev => prev.map(b =>
-                b.status === 'PENDING' ? { ...b, status: 'Processing' } : b
-            ));
+            processPending();
             toast.success('Batches successfully sent to processing pipeline.', { id: processToast });
         }, 1500);
     };

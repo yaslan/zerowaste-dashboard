@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
+import useWasteStore from '../store/useWasteStore';
 
 export default function CitizenImpactApp() {
-    const [balance, setBalance] = useState(1240.00);
+    const userBalance = useWasteStore(state => state.userBalance);
+    const redeemTokens = useWasteStore(state => state.redeemTokens);
+    const logCollection = useWasteStore(state => state.logCollection);
 
     const handleRedeem = () => {
-        if (balance < 100) {
+        if (userBalance < 100) {
             toast.error("Minimum 100 ETK required to redeem.");
             return;
         }
@@ -13,7 +16,7 @@ export default function CitizenImpactApp() {
         const loadId = toast.loading('Connecting to EcoToken network...');
         setTimeout(() => {
             toast.success(`Successfully redeemed 100.00 ETK!`, { id: loadId });
-            setBalance(prev => prev - 100);
+            redeemTokens(100);
         }, 2000);
     };
 
@@ -22,9 +25,11 @@ export default function CitizenImpactApp() {
             icon: '🔄',
         });
         setTimeout(() => {
-            toast.success('Your QR Code is ready for the scanner!', {
+            toast.success('Your QR Code was scanned by smart bin!', {
                 duration: 4000
             });
+            // Simulate reading the QR and logging to store
+            logCollection((Math.random() * 5 + 1).toFixed(1), 'Citizen App', 'PLASTIC');
         }, 1200);
     };
 
@@ -77,7 +82,7 @@ export default function CitizenImpactApp() {
                             <div className="flex justify-between items-start">
                                 <div className="flex flex-col">
                                     <p className="text-emerald-200/80 text-xs font-medium uppercase tracking-wider">EcoToken Wallet</p>
-                                    <h3 className="text-2xl font-bold mt-1 font-display">{balance.toFixed(2)} ETK</h3>
+                                    <h3 className="text-2xl font-bold mt-1 font-display">{userBalance.toFixed(2)} ETK</h3>
                                 </div>
                                 <span className="material-symbols-outlined text-emerald-300">account_balance_wallet</span>
                             </div>
