@@ -1,13 +1,27 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import useWasteStore from '../store/useWasteStore';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
 
 export default function RecyclingFacilityLog() {
     const [autoRelease, setAutoRelease] = React.useState(true);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [activeTab, setActiveTab] = useState('overview');
     const batches = useWasteStore(state => state.batches);
     const processPending = useWasteStore(state => state.processPending);
     const totalRecycledTons = useWasteStore(state => state.totalRecycledTons);
+
+    // Filter batches by search
+    const filteredBatches = useMemo(() =>
+        batches.filter(b =>
+            !searchQuery ||
+            b.source?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            b.type?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            b.id?.toLowerCase().includes(searchQuery.toLowerCase())
+        ),
+        [batches, searchQuery]
+    );
 
     // Dynamically compute intake by type from batches
     const typeData = useMemo(() => {
@@ -67,7 +81,18 @@ export default function RecyclingFacilityLog() {
                         <div className="hidden md:flex items-center">
                             <label className="flex items-center bg-slate-200 dark:bg-primary/20 rounded-lg px-3 py-1.5 focus-within:ring-2 ring-primary">
                                 <span className="material-symbols-outlined text-slate-500 dark:text-slate-400 mr-2">search</span>
-                                <input className="bg-transparent border-none focus:ring-0 text-sm w-64 placeholder:text-slate-500 dark:placeholder:text-slate-400" placeholder="Search facilities, batches..." type="text" />
+                                <input
+                                    value={searchQuery}
+                                    onChange={e => setSearchQuery(e.target.value)}
+                                    className="bg-transparent border-none focus:ring-0 text-sm w-64 placeholder:text-slate-500 dark:placeholder:text-slate-400"
+                                    placeholder="Search batches, types..."
+                                    type="text"
+                                />
+                                {searchQuery && (
+                                    <button onClick={() => setSearchQuery('')} className="text-slate-400 hover:text-white">
+                                        <span className="material-symbols-outlined text-sm">close</span>
+                                    </button>
+                                )}
                             </label>
                         </div>
                     </div>
@@ -83,6 +108,9 @@ export default function RecyclingFacilityLog() {
                                 <p className="text-xs font-bold">Admin User</p>
                                 <p className="text-[10px] text-slate-500">Facility #102</p>
                             </div>
+                            <Link to="/" className="flex items-center justify-center rounded-lg h-10 w-10 bg-slate-200 dark:bg-primary/30 text-slate-700 dark:text-slate-100 hover:bg-slate-300 dark:hover:bg-primary/50 transition-colors" title="Back to Home">
+                                <span className="material-symbols-outlined">home</span>
+                            </Link>
                             <div className="bg-slate-300 dark:bg-primary size-10 rounded-full flex items-center justify-center cursor-pointer hover:scale-105 transition-transform">
                                 <span className="material-symbols-outlined">person</span>
                             </div>
@@ -96,22 +124,24 @@ export default function RecyclingFacilityLog() {
                         <div className="flex flex-col gap-1">
                             <h3 className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">Main Menu</h3>
                             <nav className="flex flex-col gap-1">
-                                <a className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary text-white" href="#">
-                                    <span className="material-symbols-outlined">dashboard</span>
-                                    <span className="text-sm font-medium">Overview</span>
-                                </a>
-                                <a className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-primary/10 transition-colors" href="#">
-                                    <span className="material-symbols-outlined">input</span>
-                                    <span className="text-sm font-medium">Intake Log</span>
-                                </a>
-                                <a className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-primary/10 transition-colors" href="#">
-                                    <span className="material-symbols-outlined">inventory_2</span>
-                                    <span className="text-sm font-medium">Batch Management</span>
-                                </a>
-                                <a onClick={() => toast('Fetching ledger data...')} className="flex items-center cursor-pointer gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-primary/10 transition-colors" href="#">
-                                    <span className="material-symbols-outlined">account_balance_wallet</span>
-                                    <span className="text-sm font-medium">Blockchain Assets</span>
-                                </a>
+                                {[
+                                    { id: 'overview', icon: 'dashboard', label: 'Overview' },
+                                    { id: 'intake', icon: 'input', label: 'Intake Log' },
+                                    { id: 'batches', icon: 'inventory_2', label: 'Batch Management' },
+                                    { id: 'blockchain', icon: 'account_balance_wallet', label: 'Blockchain Assets' },
+                                ].map(item => (
+                                    <button
+                                        key={item.id}
+                                        onClick={() => setActiveTab(item.id)}
+                                        className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-left w-full transition-colors ${activeTab === item.id
+                                                ? 'bg-primary text-white'
+                                                : 'text-slate-600 dark:text-slate-400 hover:bg-primary/10'
+                                            }`}
+                                    >
+                                        <span className="material-symbols-outlined">{item.icon}</span>
+                                        <span className="text-sm font-medium">{item.label}</span>
+                                    </button>
+                                ))}
                             </nav>
                         </div>
                         <div className="mt-auto p-4 bg-primary/5 rounded-xl border border-primary/10 hover:border-primary/30 transition-colors cursor-pointer" onClick={() => toast.success('Sensors running optimally')}>

@@ -1,4 +1,5 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import useWasteStore from '../store/useWasteStore';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
@@ -40,7 +41,11 @@ export default function CitizenImpactApp() {
         }, 2000);
     };
 
+    const [isScanning, setIsScanning] = useState(false);
+
     const handleGenerateQR = () => {
+        if (isScanning) return;
+        setIsScanning(true);
         toast('Generating your unique drop-off QR...', {
             icon: '🔄',
         });
@@ -48,8 +53,8 @@ export default function CitizenImpactApp() {
             toast.success('Your QR Code was scanned by smart bin!', {
                 duration: 4000
             });
-            // Simulate reading the QR and logging to store
             logCollection((Math.random() * 5 + 1).toFixed(1), 'Citizen App', 'PLASTIC');
+            setIsScanning(false);
         }, 1200);
     };
 
@@ -57,13 +62,9 @@ export default function CitizenImpactApp() {
         <div className="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col font-display">
             {/* Top Navigation Bar */}
             <header className="sticky top-0 z-10 flex items-center bg-background-light dark:bg-background-dark p-4 border-b border-primary/10 dark:border-primary/20 justify-between">
-                <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10 dark:bg-primary/20">
-                    <div
-                        className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-8 cursor-pointer hover:opacity-80 transition-opacity"
-                        style={{ backgroundImage: `url("https://lh3.googleusercontent.com/aida-public/AB6AXuBSEscCNNFfm9NedeOxqPZRHX9yHMRVMv2uIRcCuDO_ndbKmz3b-ouYidcv1ewz2MYFrulnHau-91W3-1V6UMDimixBvNsmuIIIJElx_YghO0B4itfplPClalKclOJFvqh-a_hXTOgm9-HvzRDs7gcPMhp659cCdr4A50SwoFXq0rUxfsBarjNQDtCMvbguX9GLM1aHa76PwO4GT21K5sInKRFmHJm41hifZ4i_zTw15-AEp2iKBajlYO-2n6WmVFIV40_MbBZHv18")` }}
-                        onClick={() => toast("Opening profile settings...")}
-                    ></div>
-                </div>
+                <Link to="/" className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10 dark:bg-primary/20 hover:bg-primary/30 transition-colors">
+                    <span className="material-symbols-outlined text-primary dark:text-primary-light">home</span>
+                </Link>
                 <h1 className="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-tight flex-1 ml-3 font-display">Zero Waste</h1>
                 <div className="flex items-center gap-2">
                     <button onClick={() => toast("You have 2 new local community circulars")} className="flex items-center justify-center rounded-lg h-10 w-10 bg-primary/10 dark:bg-primary/20 text-primary dark:text-slate-100 hover:bg-primary/30 transition-colors">
@@ -213,6 +214,6 @@ export default function CitizenImpactApp() {
                     </a>
                 </div>
             </nav>
-        </div>
+        </div >
     );
 }

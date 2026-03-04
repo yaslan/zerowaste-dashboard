@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import useWasteStore from '../store/useWasteStore';
 
@@ -50,6 +51,9 @@ export default function SortingFacilityHub() {
                             </div>
                         </div>
                     </div>
+                    <Link to="/" className="p-2 rounded-lg bg-neutral-800 text-slate-100 hover:bg-neutral-700 transition-colors" title="Back to Home">
+                        <span className="material-symbols-outlined">home</span>
+                    </Link>
                     <button onClick={() => toast('No new alerts from the system')} className="p-2 rounded-lg bg-neutral-800 text-slate-100 hover:bg-neutral-700 transition-colors">
                         <span className="material-symbols-outlined">notifications</span>
                     </button>

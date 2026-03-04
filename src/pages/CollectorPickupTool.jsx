@@ -1,4 +1,5 @@
 import React, { useState, lazy, Suspense } from 'react';
+import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import useWasteStore from '../store/useWasteStore';
 
@@ -67,6 +68,9 @@ export default function CollectorPickupTool() {
                     </div>
                 </div>
                 <div className="flex gap-2">
+                    <Link to="/" className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary dark:text-slate-100 hover:bg-primary/30 transition-colors" title="Back to Home">
+                        <span className="material-symbols-outlined">home</span>
+                    </Link>
                     <button onClick={() => toast("No new notifications")} className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary dark:text-slate-100">
                         <span className="material-symbols-outlined">notifications</span>
                     </button>
