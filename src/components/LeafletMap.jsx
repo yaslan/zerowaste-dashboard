@@ -7,7 +7,7 @@ export default function LeafletMap({ markers }) {
         <MapContainer
             center={[41.015, 28.98]}
             zoom={12}
-            scrollWheelZoom={true}
+            scrollWheelZoom={false}
             style={{ height: '100%', width: '100%', minHeight: '400px' }}
             zoomControl={false}
         >

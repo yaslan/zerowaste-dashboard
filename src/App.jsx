@@ -1,5 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
+import useWasteStore from './store/useWasteStore';
 import Dashboard from './pages/Dashboard';
 import CitizenImpactApp from './pages/CitizenImpactApp';
 import CollectorPickupTool from './pages/CollectorPickupTool';
@@ -76,9 +78,6 @@ function Home() {
     );
 }
 
-import { Toaster } from 'react-hot-toast';
-import useWasteStore from './store/useWasteStore';
-
 export default function App() {
     React.useEffect(() => {
         useWasteStore.getState().fetchInitialData();
@@ -86,7 +85,7 @@ export default function App() {
 
     return (
         <BrowserRouter>
-            <Toaster position="top-right" />
+            <Toaster position="top-right" toastOptions={{ style: { background: '#1e2924', color: '#f1f5f9', border: '1px solid #2c3f37' } }} />
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/municipality-dashboard" element={<Dashboard />} />
@@ -94,6 +93,14 @@ export default function App() {
                 <Route path="/collector-pickup" element={<CollectorPickupTool />} />
                 <Route path="/recycling-log" element={<RecyclingFacilityLog />} />
                 <Route path="/sorting-hub" element={<SortingFacilityHub />} />
+                <Route path="*" element={
+                    <div className="min-h-screen bg-background-dark flex flex-col items-center justify-center text-slate-100 gap-6">
+                        <span className="material-symbols-outlined text-6xl text-primary-light">error</span>
+                        <h1 className="text-4xl font-black">404</h1>
+                        <p className="text-slate-400">Page not found.</p>
+                        <Link to="/" className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-light transition-colors font-bold">← Back to Home</Link>
+                    </div>
+                } />
             </Routes>
         </BrowserRouter>
     );

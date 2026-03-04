@@ -1,8 +1,7 @@
-import { useState, useEffect, lazy, Suspense, useMemo } from 'react'
+import { useState, lazy, Suspense, useMemo } from 'react'
 import toast from 'react-hot-toast'
 import useWasteStore from '../store/useWasteStore'
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts'
-import '../index.css'
 
 // Lazy load Leaflet components (requires window/DOM)
 const LeafletMap = lazy(() => import('../components/LeafletMap'))
