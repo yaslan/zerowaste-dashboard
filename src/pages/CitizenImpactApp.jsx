@@ -1,6 +1,16 @@
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import useWasteStore from '../store/useWasteStore';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+
+const impactData = [
+    { week: 'W1', recycled: 12, carbon: 3 },
+    { week: 'W2', recycled: 15, carbon: 4.5 },
+    { week: 'W3', recycled: 19, carbon: 5 },
+    { week: 'W4', recycled: 24, carbon: 7 },
+    { week: 'W5', recycled: 30, carbon: 8.5 },
+    { week: 'W6', recycled: 45.2, carbon: 12.5 },
+];
 
 export default function CitizenImpactApp() {
     const userBalance = useWasteStore(state => state.userBalance);
@@ -70,6 +80,36 @@ export default function CitizenImpactApp() {
                         </div>
                         <p className="text-slate-900 dark:text-slate-100 text-2xl font-bold font-display">12.5 kg</p>
                         <p className="text-emerald-600 dark:text-emerald-400 text-xs font-semibold">+8% this month</p>
+                    </div>
+                </div>
+
+                {/* Chart Section */}
+                <div className="px-4 pb-4">
+                    <div className="bg-white dark:bg-primary/5 rounded-xl border border-primary/10 shadow-sm p-4">
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-slate-900 dark:text-slate-100 text-sm font-bold font-display">Impact Over Time</h3>
+                            <span className="text-xs font-medium text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded">6 Weeks</span>
+                        </div>
+                        <div className="h-40 w-full">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <AreaChart data={impactData} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
+                                    <defs>
+                                        <linearGradient id="colorRecycled" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
+                                            <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                                        </linearGradient>
+                                    </defs>
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#334155" opacity={0.2} />
+                                    <XAxis dataKey="week" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#64748b' }} />
+                                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#64748b' }} />
+                                    <Tooltip
+                                        contentStyle={{ backgroundColor: '#1e293b', borderColor: '#334155', borderRadius: '8px', fontSize: '12px' }}
+                                        itemStyle={{ color: '#f8fafc', fontWeight: 'bold' }}
+                                    />
+                                    <Area type="monotone" dataKey="recycled" name="Recycled (kg)" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#colorRecycled)" />
+                                </AreaChart>
+                            </ResponsiveContainer>
+                        </div>
                     </div>
                 </div>
 

@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import useWasteStore from '../store/useWasteStore';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
+
+const typeData = [
+    { type: 'Plastic', amount: 4500 },
+    { type: 'Metal', amount: 3200 },
+    { type: 'Organic', amount: 1850 },
+    { type: 'Glass', amount: 2100 },
+];
 
 export default function RecyclingFacilityLog() {
     const [autoRelease, setAutoRelease] = useState(true);
@@ -212,6 +220,27 @@ export default function RecyclingFacilityLog() {
                                             </tbody>
                                         </table>
                                     </div>
+                                </div>
+                            </div>
+
+                            {/* Chart Column */}
+                            <div className="lg:col-span-1 flex flex-col gap-4">
+                                <div className="flex items-center justify-between">
+                                    <h2 className="text-lg font-bold flex items-center gap-2">
+                                        <span className="material-symbols-outlined text-primary">bar_chart</span>
+                                        Intake by Type
+                                    </h2>
+                                </div>
+                                <div className="bg-white dark:bg-background-dark/50 border border-slate-200 dark:border-primary/20 rounded-xl p-4 shadow-sm flex-1 flex flex-col justify-center min-h-[300px]">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <BarChart data={typeData} layout="vertical" margin={{ top: 0, right: 0, left: 10, bottom: 0 }}>
+                                            <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#334155" opacity={0.2} />
+                                            <XAxis type="number" hide />
+                                            <YAxis dataKey="type" type="category" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b', fontWeight: 'bold' }} />
+                                            <RechartsTooltip cursor={{ fill: '#334155', opacity: 0.1 }} contentStyle={{ backgroundColor: '#1e293b', borderColor: '#334155', borderRadius: '8px', fontSize: '12px' }} itemStyle={{ color: '#10b981', fontWeight: 'bold' }} />
+                                            <Bar dataKey="amount" fill="#3b82f6" radius={[0, 4, 4, 0]} barSize={24} />
+                                        </BarChart>
+                                    </ResponsiveContainer>
                                 </div>
                             </div>
                         </div>

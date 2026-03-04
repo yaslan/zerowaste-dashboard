@@ -1,7 +1,25 @@
 import { useState } from 'react'
 import toast from 'react-hot-toast'
 import useWasteStore from '../store/useWasteStore'
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts'
 import '../index.css'
+
+const pieData = [
+  { name: 'Plastic', value: 42, color: '#60a5fa' },
+  { name: 'Paper', value: 28, color: '#fbbf24' },
+  { name: 'Glass', value: 18, color: '#34d399' },
+  { name: 'Other', value: 12, color: '#64748b' },
+];
+
+const barData = [
+  { name: 'Mon', weight: 120 },
+  { name: 'Tue', weight: 154 },
+  { name: 'Wed', weight: 132 },
+  { name: 'Thu', weight: 180 },
+  { name: 'Fri', weight: 210 },
+  { name: 'Sat', weight: 250 },
+  { name: 'Sun', weight: 195 },
+];
 
 export default function Dashboard() {
   const { totalRecycledTons, ecoTokens, carbonOffset } = useWasteStore();
@@ -189,43 +207,38 @@ export default function Dashboard() {
                 <p className="text-xs text-slate-500">Breakdown by material type</p>
               </div>
               <div className="p-6 flex-1 flex flex-col justify-around">
-                <div className="space-y-6">
-                  <div className="space-y-2 group cursor-pointer" onClick={() => toast('Opening Plastic recycling breakdown')}>
-                    <div className="flex justify-between text-sm">
-                      <span className="flex items-center gap-2 group-hover:text-blue-400 transition-colors"><span className="size-2 rounded-full bg-blue-400"></span> Plastic</span>
-                      <span className="font-bold text-white">42%</span>
+                <div className="h-[240px] w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={pieData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={60}
+                        outerRadius={90}
+                        paddingAngle={5}
+                        dataKey="value"
+                        stroke="none"
+                      >
+                        {pieData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} style={{ outline: 'none' }} />
+                        ))}
+                      </Pie>
+                      <RechartsTooltip
+                        contentStyle={{ backgroundColor: '#1e293b', borderColor: '#334155', borderRadius: '8px' }}
+                        itemStyle={{ color: '#f8fafc', fontWeight: 'bold' }}
+                        formatter={(value) => [`${value}%`, 'Share']}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="flex flex-wrap justify-center gap-4 text-xs mt-2">
+                  {pieData.map(item => (
+                    <div key={item.name} className="flex items-center gap-1.5 cursor-pointer" onClick={() => toast(`Opening ${item.name} details`)}>
+                      <span className="size-3 rounded-full" style={{ backgroundColor: item.color }}></span>
+                      <span className="text-slate-300 font-medium">{item.name}</span>
                     </div>
-                    <div className="h-2 w-full bg-background-dark rounded-full overflow-hidden">
-                      <div className="h-full bg-blue-400 rounded-full" style={{ width: '42%' }}></div>
-                    </div>
-                  </div>
-                  <div className="space-y-2 group cursor-pointer" onClick={() => toast('Opening Paper recycling breakdown')}>
-                    <div className="flex justify-between text-sm">
-                      <span className="flex items-center gap-2 group-hover:text-amber-400 transition-colors"><span className="size-2 rounded-full bg-amber-400"></span> Paper</span>
-                      <span className="font-bold text-white">28%</span>
-                    </div>
-                    <div className="h-2 w-full bg-background-dark rounded-full overflow-hidden">
-                      <div className="h-full bg-amber-400 rounded-full" style={{ width: '28%' }}></div>
-                    </div>
-                  </div>
-                  <div className="space-y-2 group cursor-pointer" onClick={() => toast('Opening Glass recycling breakdown')}>
-                    <div className="flex justify-between text-sm">
-                      <span className="flex items-center gap-2 group-hover:text-accent-green transition-colors"><span className="size-2 rounded-full bg-accent-green"></span> Glass</span>
-                      <span className="font-bold text-white">18%</span>
-                    </div>
-                    <div className="h-2 w-full bg-background-dark rounded-full overflow-hidden">
-                      <div className="h-full bg-accent-green rounded-full" style={{ width: '18%' }}></div>
-                    </div>
-                  </div>
-                  <div className="space-y-2 group cursor-pointer" onClick={() => toast('Opening Other materials breakdown')}>
-                    <div className="flex justify-between text-sm">
-                      <span className="flex items-center gap-2 group-hover:text-slate-300 transition-colors"><span className="size-2 rounded-full bg-slate-500"></span> Other</span>
-                      <span className="font-bold text-white">12%</span>
-                    </div>
-                    <div className="h-2 w-full bg-background-dark rounded-full overflow-hidden">
-                      <div className="h-full bg-slate-500 rounded-full" style={{ width: '12%' }}></div>
-                    </div>
-                  </div>
+                  ))}
                 </div>
                 <div className="mt-8 p-4 bg-primary/10 rounded-xl border border-primary/20 hover:bg-primary/20 transition-colors cursor-pointer" onClick={() => toast('Deploying new bins to Central Plaza...', { icon: '🚚' })}>
                   <div className="flex items-center gap-3 text-accent-green mb-2">
