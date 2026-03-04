@@ -85,8 +85,8 @@ export default function Dashboard() {
               key={item.id}
               onClick={() => setActiveTab(item.id)}
               className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${activeTab === item.id
-                  ? 'bg-primary text-white'
-                  : 'text-slate-400 hover:bg-border-dark hover:text-white'
+                ? 'bg-primary text-white'
+                : 'text-slate-400 hover:bg-border-dark hover:text-white'
                 }`}
             >
               <span className="material-symbols-outlined">{item.icon}</span>
@@ -129,7 +129,7 @@ export default function Dashboard() {
             </button>
             <div className="h-8 w-[1px] bg-border-dark"></div>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-medium text-slate-400">Green City Initiative 2024</span>
+              <span className="text-xs font-medium text-slate-400">Green City Initiative {new Date().getFullYear()}</span>
             </div>
           </div>
         </header >
@@ -333,7 +333,7 @@ export default function Dashboard() {
 
         {/* Footer */}
         <footer className="p-8 border-t border-border-dark flex flex-col md:flex-row items-center justify-between text-slate-500 text-xs gap-4 mt-auto">
-          <p>© 2024 ZeroWaste City Initiative. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} ZeroWaste City Initiative. All rights reserved.</p>
           <div className="flex gap-6">
             <a className="hover:text-white transition-colors cursor-pointer" onClick={() => toast('Privacy Policy downloaded')}>Privacy Policy</a>
             <a className="hover:text-white transition-colors cursor-pointer" onClick={() => toast('Redirecting to Docs...')}>API Documentation</a>

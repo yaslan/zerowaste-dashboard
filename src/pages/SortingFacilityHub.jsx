@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import toast from 'react-hot-toast';
 import useWasteStore from '../store/useWasteStore';
 
@@ -7,12 +7,29 @@ export default function SortingFacilityHub() {
     const verifyAndSort = useWasteStore(state => state.verifyAndSort);
     const batches = allBatches.filter(b => b.status === 'Processing');
 
+    // Dynamic daily volume from all batches
+    const todayVolume = useMemo(() =>
+        allBatches.reduce((sum, b) => sum + (b.weight || 0), 0)
+        , [allBatches]);
+    const dailyTarget = 1500;
+    const progressPct = Math.min(100, Math.round((todayVolume / dailyTarget) * 100));
+
+    // Dynamic blockchain hash that rotates on each verify
+    const [lastHash, setLastHash] = useState(
+        () => '0x' + Math.random().toString(16).slice(2, 9) + '...' + Math.random().toString(16).slice(2, 6)
+    );
+    const [lastTxId, setLastTxId] = useState(
+        () => 'tx_id: ' + Math.floor(Math.random() * 99999) + '-' + Math.floor(Math.random() * 9999)
+    );
+
     const handleVerifyAndSort = (id) => {
         const loadingToast = toast.loading(`Verifying Batch #${id}...`);
-
         setTimeout(() => {
             toast.success(`Batch #${id} successfully verified and sorted!`, { id: loadingToast });
             verifyAndSort(id);
+            // Rotate blockchain hash
+            setLastHash('0x' + Math.random().toString(16).slice(2, 9) + '...' + Math.random().toString(16).slice(2, 6));
+            setLastTxId('tx_id: ' + Math.floor(Math.random() * 99999) + '-' + Math.floor(Math.random() * 9999));
         }, 1200);
     };
 
@@ -45,13 +62,13 @@ export default function SortingFacilityHub() {
                     <div className="bg-slate-200 dark:bg-neutral-800 rounded-xl p-4 border border-neutral-700">
                         <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Today's Volume</p>
                         <div className="flex items-end gap-2">
-                            <span className="text-2xl font-bold text-slate-900 dark:text-white">1,240</span>
+                            <span className="text-2xl font-bold text-slate-900 dark:text-white">{todayVolume.toLocaleString()}</span>
                             <span className="text-sm text-slate-500 dark:text-slate-400 mb-1">kg</span>
                         </div>
                         <div className="mt-3 h-1.5 w-full bg-neutral-300 dark:bg-neutral-700 rounded-full overflow-hidden">
-                            <div className="h-full bg-accent-green" style={{ width: '82%' }}></div>
+                            <div className="h-full bg-accent-green transition-all duration-700" style={{ width: `${progressPct}%` }}></div>
                         </div>
-                        <p className="text-[10px] mt-2 text-slate-500 dark:text-slate-400">82% of daily target</p>
+                        <p className="text-[10px] mt-2 text-slate-500 dark:text-slate-400">{progressPct}% of daily target ({dailyTarget.toLocaleString()} kg)</p>
                     </div>
                     <div className="bg-slate-200 dark:bg-neutral-800 rounded-xl p-4 border border-neutral-700">
                         <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">System Load</p>
@@ -146,7 +163,7 @@ export default function SortingFacilityHub() {
                     <div className="space-y-3">
                         <div className="flex items-center justify-between text-xs">
                             <span className="text-slate-600 dark:text-slate-400">Last Block Hash</span>
-                            <span className="font-mono text-accent-green bg-accent-green/10 px-1 rounded">0x7f2...e49a</span>
+                            <span className="font-mono text-accent-green bg-accent-green/10 px-1 rounded">{lastHash}</span>
                         </div>
                         <div className="flex items-center justify-between text-xs">
                             <span className="text-slate-600 dark:text-slate-400">Status</span>
@@ -156,7 +173,7 @@ export default function SortingFacilityHub() {
                             </span>
                         </div>
                         <div className="p-2 bg-slate-200 dark:bg-black/20 rounded font-mono text-[10px] text-slate-600 dark:text-slate-500 break-all leading-relaxed border border-slate-300/50 dark:border-neutral-800">
-                            tx_id: 88294-f823-99b2-c010-332919abcf82...
+                            {lastTxId}...
                         </div>
                     </div>
                 </section>

@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, lazy, Suspense } from 'react';
 import toast from 'react-hot-toast';
 import useWasteStore from '../store/useWasteStore';
+
+const CollectorRouteMap = lazy(() => import('../components/CollectorRouteMap'));
 
 export default function CollectorPickupTool() {
     const [weight, setWeight] = useState('');
@@ -77,16 +79,15 @@ export default function CollectorPickupTool() {
             <main className="flex-1 overflow-y-auto pb-24">
                 {/* Active Route Map Section */}
                 <div className="p-4">
-                    <div className="relative group h-48 w-full rounded-xl overflow-hidden border border-primary/20 bg-slate-200 dark:bg-slate-800">
-                        <div
-                            className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 group-hover:scale-105"
-                            style={{ backgroundImage: `url('https://lh3.googleusercontent.com/aida-public/AB6AXuAQJCu7JE26V-rS4u-rxHsJEYzZnJ8FvshSDm9YhNBlpeR6KbF9ARfBNQfpgxS4nRTd77SvPB6DrZ3xZfsm7kvYLvt4uSMDkUWMFR5KjR28jjltA5uf-bMITlKSjkiTUDbYNvzDPPHXAZ5mBztuLqx2gBV0BoyWJ37wFCc6_DgCX_LqDQG_ULC-8kgwS2mrXxKRguW-odCQslXdP4KtDhmKzSo-An0Wt3TFZ7iNP5mEo6A9v8bsJNL8JEGdlfUg3ILiiV08GB2DQYo')` }}
-                        ></div>
-                        <div className="absolute top-3 left-3 bg-background-dark/80 backdrop-blur px-3 py-1.5 rounded-lg border border-primary/30 flex items-center gap-2">
+                    <div className="relative group h-48 w-full rounded-xl overflow-hidden border border-primary/20 bg-slate-900">
+                        <Suspense fallback={<div className="flex items-center justify-center h-full text-slate-500 text-sm">Loading route map...</div>}>
+                            <CollectorRouteMap />
+                        </Suspense>
+                        <div className="absolute top-3 left-3 z-[1000] bg-background-dark/80 backdrop-blur px-3 py-1.5 rounded-lg border border-primary/30 flex items-center gap-2">
                             <span className="material-symbols-outlined text-sm text-green-500">navigation</span>
                             <span className="text-xs font-bold text-white uppercase">Route Active</span>
                         </div>
-                        <div className="absolute bottom-3 right-3">
+                        <div className="absolute bottom-3 right-3 z-[1000]">
                             <button onClick={() => toast.success("Location centered")} className="bg-primary text-white p-3 rounded-full shadow-xl flex items-center justify-center active:scale-95 transition-transform">
                                 <span className="material-symbols-outlined">my_location</span>
                             </button>

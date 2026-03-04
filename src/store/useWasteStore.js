@@ -77,9 +77,12 @@ const useWasteStore = create((set, get) => ({
 
         set((state) => {
             let newTransactions = state.transactions;
-            if (source === 'Citizen App' && tokensEarned > 0) {
+            if (tokensEarned > 0) {
+                const txTitle = source === 'Citizen App'
+                    ? `Smart Bin: ${type} Deposit`
+                    : `Collector Log: ${type} (${source})`;
                 newTransactions = [
-                    { id: 'T-' + Math.floor(Math.random() * 9999), title: `Smart Bin: ${type} Deposit`, type: 'earn', amount: tokensEarned, time: 'Just now' },
+                    { id: 'T-' + Math.floor(Math.random() * 9999), title: txTitle, type: 'earn', amount: tokensEarned, time: currentTime() },
                     ...state.transactions
                 ];
             }
