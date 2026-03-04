@@ -22,7 +22,7 @@ const barData = [
 ];
 
 export default function Dashboard() {
-  const { totalRecycledTons, ecoTokens, carbonOffset } = useWasteStore();
+  const { totalRecycledTons, ecoTokens, carbonOffset, batches } = useWasteStore();
 
   const handleExport = () => {
     const id = toast.loading('Generating PDF Report...');
@@ -272,54 +272,33 @@ export default function Dashboard() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border-dark">
-                  <tr className="hover:bg-primary/5 transition-colors cursor-pointer" onClick={(e) => toast(`Tracking Pickup #ZW-9821`)}>
-                    <td className="px-6 py-4 font-mono text-slate-400">#ZW-9821</td>
-                    <td className="px-6 py-4 text-white">North Hillside</td>
-                    <td className="px-6 py-4"><span className="px-2 py-1 bg-blue-500/10 text-blue-400 rounded text-xs">Plastic</span></td>
-                    <td className="px-6 py-4 text-white">24.5 kg</td>
-                    <td className="px-6 py-4 text-accent-green font-bold">+120 ET</td>
-                    <td className="px-6 py-4">
-                      <span className="flex items-center gap-2 text-accent-green">
-                        <span className="size-1.5 rounded-full bg-accent-green"></span> Completed
-                      </span>
-                    </td>
-                  </tr>
-                  <tr className="hover:bg-primary/5 transition-colors cursor-pointer" onClick={(e) => toast(`Tracking Pickup #ZW-9822`)}>
-                    <td className="px-6 py-4 font-mono text-slate-400">#ZW-9822</td>
-                    <td className="px-6 py-4 text-white">East Harbor</td>
-                    <td className="px-6 py-4"><span className="px-2 py-1 bg-accent-green/10 text-accent-green rounded text-xs">Glass</span></td>
-                    <td className="px-6 py-4 text-white">12.0 kg</td>
-                    <td className="px-6 py-4 text-accent-green font-bold">+85 ET</td>
-                    <td className="px-6 py-4">
-                      <span className="flex items-center gap-2 text-accent-green">
-                        <span className="size-1.5 rounded-full bg-accent-green"></span> Completed
-                      </span>
-                    </td>
-                  </tr>
-                  <tr className="hover:bg-primary/5 transition-colors cursor-pointer" onClick={(e) => toast(`Tracking Pickup #ZW-9823`)}>
-                    <td className="px-6 py-4 font-mono text-slate-400">#ZW-9823</td>
-                    <td className="px-6 py-4 text-white">Central Market</td>
-                    <td className="px-6 py-4"><span className="px-2 py-1 bg-amber-500/10 text-amber-400 rounded text-xs">Paper</span></td>
-                    <td className="px-6 py-4 text-white">56.2 kg</td>
-                    <td className="px-6 py-4 text-slate-500 font-bold">--</td>
-                    <td className="px-6 py-4">
-                      <span className="flex items-center gap-2 text-amber-400">
-                        <span className="size-1.5 rounded-full bg-amber-400 animate-pulse"></span> In Progress
-                      </span>
-                    </td>
-                  </tr>
-                  <tr className="hover:bg-primary/5 transition-colors cursor-pointer" onClick={(e) => toast(`Tracking Pickup #ZW-9824`)}>
-                    <td className="px-6 py-4 font-mono text-slate-400">#ZW-9824</td>
-                    <td className="px-6 py-4 text-white">South Park</td>
-                    <td className="px-6 py-4"><span className="px-2 py-1 bg-blue-500/10 text-blue-400 rounded text-xs">Plastic</span></td>
-                    <td className="px-6 py-4 text-white">8.1 kg</td>
-                    <td className="px-6 py-4 text-accent-green font-bold">+40 ET</td>
-                    <td className="px-6 py-4">
-                      <span className="flex items-center gap-2 text-accent-green">
-                        <span className="size-1.5 rounded-full bg-accent-green"></span> Completed
-                      </span>
-                    </td>
-                  </tr>
+                  {batches.slice(0, 5).map(batch => (
+                    <tr key={batch.id} className="hover:bg-primary/5 transition-colors cursor-pointer" onClick={() => toast(`Tracking Pickup #${batch.id}`)}>
+                      <td className="px-6 py-4 font-mono text-slate-400">#{batch.id}</td>
+                      <td className="px-6 py-4 text-white hover:text-primary transition-colors">{batch.source}</td>
+                      <td className="px-6 py-4">
+                        <span className={`px-2 py-1 rounded text-xs font-bold ${batch.type.includes('PLASTIC') ? 'bg-blue-500/10 text-blue-400' :
+                            batch.type.includes('GLASS') ? 'bg-accent-green/10 text-accent-green' :
+                              batch.type.includes('PAPER') ? 'bg-amber-500/10 text-amber-400' :
+                                'bg-slate-500/10 text-slate-400'
+                          }`}>{batch.type}</span>
+                      </td>
+                      <td className="px-6 py-4 text-white">{batch.weight} kg</td>
+                      <td className="px-6 py-4 font-bold text-accent-green">+{Math.floor(batch.weight)} ET</td>
+                      <td className="px-6 py-4">
+                        <span className={`flex items-center gap-2 ${batch.status === 'Verified' ? 'text-accent-green' :
+                            batch.status === 'Processing' ? 'text-primary-light animate-pulse' :
+                              'text-amber-400'
+                          }`}>
+                          <span className={`size-1.5 rounded-full ${batch.status === 'Verified' ? 'bg-accent-green' :
+                              batch.status === 'Processing' ? 'bg-primary-light' :
+                                'bg-amber-400'
+                            }`}></span>
+                          {batch.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
