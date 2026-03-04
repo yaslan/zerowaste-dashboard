@@ -131,7 +131,7 @@ export default function CollectorPickupTool() {
                 <div className="px-4 mt-6">
                     <div className="flex items-center justify-between mb-4">
                         <h2 className="text-slate-900 dark:text-slate-100 text-xl font-bold">Scheduled Pickups</h2>
-                        <span className="bg-primary/20 text-primary dark:text-slate-300 text-xs font-bold px-2 py-1 rounded">{pickups.length > 0 ? `${pickups.length + 5} REMAINING` : 'DONE'}</span>
+                        <span className="bg-primary/20 text-primary dark:text-slate-300 text-xs font-bold px-2 py-1 rounded">{pickups.length > 0 ? `${pickups.length} REMAINING` : 'ALL DONE ✓'}</span>
                     </div>
 
                     <div className="space-y-3">

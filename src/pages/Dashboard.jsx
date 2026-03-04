@@ -55,6 +55,33 @@ export default function Dashboard() {
   }, [batches]);
 
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [darkMode, setDarkMode] = useState(true);
+
+  // Toggle dark mode on html element
+  const toggleDarkMode = () => {
+    setDarkMode(prev => {
+      const next = !prev;
+      document.documentElement.classList.toggle('dark', next);
+      return next;
+    });
+  };
+
+  // Filtered batches for search
+  const filteredBatches = useMemo(() =>
+    batches.filter(b =>
+      !searchQuery ||
+      b.source?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      b.type?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      b.id?.toLowerCase().includes(searchQuery.toLowerCase())
+    ),
+    [batches, searchQuery]
+  );
+
+  // Dynamic KPI badges based on new batches vs base
+  const pendingCount = batches.filter(b => b.status === 'PENDING').length;
+  const recycledGrowth = batches.length > 4 ? `+${((batches.length - 4) * 2.1).toFixed(1)}%` : '+12.5%';
+  const tokenGrowth = batches.length > 4 ? `+${((batches.length - 4) * 1.3).toFixed(1)}%` : '+5.2%';
 
   const handleExport = () => {
     const id = toast.loading('Generating PDF Report...');
@@ -115,17 +142,48 @@ export default function Dashboard() {
           <div className="flex items-center gap-4 flex-1">
             <div className="relative w-full max-w-md">
               <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-lg">search</span>
-              <input className="w-full bg-surface-dark border-border-dark rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-primary focus:border-primary outline-none" placeholder="Search districts, reports, or users..." type="text" />
+              <input
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                className="w-full bg-surface-dark border-border-dark rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-primary focus:border-primary outline-none"
+                placeholder="Search batches, districts, or types..."
+                type="text"
+              />
+              {searchQuery && (
+                <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white">
+                  <span className="material-symbols-outlined text-sm">close</span>
+                </button>
+              )}
             </div>
           </div>
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2 px-3 py-1 bg-primary/20 rounded-full border border-primary/30 cursor-pointer pointer-events-auto hover:bg-primary/30 transition-colors" onClick={() => toast.success('All blockchain nodes synchronized.')}>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 px-3 py-1 bg-primary/20 rounded-full border border-primary/30 cursor-pointer pointer-events-auto hover:bg-primary/30 transition-colors" onClick={() => toast.success('All blockchain nodes synchronized.')}
+            >
               <span className="size-2 rounded-full bg-accent-green animate-pulse"></span>
               <span className="text-xs font-medium text-accent-green">System Live</span>
             </div>
-            <button onClick={() => toast('No unread priority alerts')} className="relative text-slate-400 hover:text-white transition-colors cursor-pointer">
+            {/* Notification bell with real pending count */}
+            <button
+              onClick={() => pendingCount > 0
+                ? toast(`⚠️ ${pendingCount} batch${pendingCount > 1 ? 'es' : ''} waiting for processing`, { duration: 4000 })
+                : toast.success('No unread alerts — all batches processed!')
+              }
+              className="relative text-slate-400 hover:text-white transition-colors cursor-pointer"
+            >
               <span className="material-symbols-outlined">notifications</span>
-              <span className="absolute -top-1 -right-1 size-2 bg-red-500 rounded-full animate-pulse"></span>
+              {pendingCount > 0 && (
+                <span className="absolute -top-1 -right-1 size-4 bg-red-500 rounded-full text-[9px] text-white flex items-center justify-center font-bold animate-pulse">
+                  {pendingCount}
+                </span>
+              )}
+            </button>
+            {/* Dark mode toggle */}
+            <button
+              onClick={toggleDarkMode}
+              title={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              className="relative text-slate-400 hover:text-white transition-colors cursor-pointer"
+            >
+              <span className="material-symbols-outlined">{darkMode ? 'light_mode' : 'dark_mode'}</span>
             </button>
             <div className="h-8 w-[1px] bg-border-dark"></div>
             <div className="flex items-center gap-2">
@@ -158,7 +216,8 @@ export default function Dashboard() {
                 <div className="bg-primary/30 p-2 rounded-lg text-primary-light">
                   <span className="material-symbols-outlined filled-icon">delete_sweep</span>
                 </div>
-                <span className="text-accent-green text-xs font-bold bg-accent-green/10 px-2 py-1 rounded">+12.5%</span>
+                <span className={`text-xs font-bold px-2 py-1 rounded ${batches.length > 4 ? 'text-accent-green bg-accent-green/10' : 'text-accent-green bg-accent-green/10'
+                  }`}>{recycledGrowth}</span>
               </div>
               <div>
                 <p className="text-slate-400 text-sm font-medium">Total Recycled</p>
@@ -170,7 +229,7 @@ export default function Dashboard() {
                 <div className="bg-primary/30 p-2 rounded-lg text-primary-light">
                   <span className="material-symbols-outlined filled-icon">generating_tokens</span>
                 </div>
-                <span className="text-accent-green text-xs font-bold bg-accent-green/10 px-2 py-1 rounded">+5.2%</span>
+                <span className="text-accent-green text-xs font-bold bg-accent-green/10 px-2 py-1 rounded">{tokenGrowth}</span>
               </div>
               <div>
                 <p className="text-slate-400 text-sm font-medium">EcoTokens Distributed</p>
@@ -298,7 +357,15 @@ export default function Dashboard() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border-dark">
-                  {batches.slice(0, 5).map(batch => (
+                  {filteredBatches.length === 0 && (
+                    <tr>
+                      <td colSpan={6} className="px-6 py-10 text-center text-slate-500">
+                        <span className="material-symbols-outlined text-3xl block mb-2">search_off</span>
+                        No results for &ldquo;{searchQuery}&rdquo;
+                      </td>
+                    </tr>
+                  )}
+                  {filteredBatches.slice(0, 8).map(batch => (
                     <tr key={batch.id} className="hover:bg-primary/5 transition-colors cursor-pointer" onClick={() => toast(`Tracking Pickup #${batch.id}`)}>
                       <td className="px-6 py-4 font-mono text-slate-400">#{batch.id}</td>
                       <td className="px-6 py-4 text-white hover:text-primary transition-colors">{batch.source}</td>
