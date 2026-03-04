@@ -13,12 +13,15 @@ export default function CollectorPickupTool() {
     ]);
 
     const handleScan = () => {
-        toast.success('QR Code successfully scanned!\nCustomer verified.', { duration: 3000 });
+        const fakeWeight = (Math.random() * 15 + 2).toFixed(2);
+        setWeight(fakeWeight);
+        toast.success(`QR Code successfully scanned!\nCustomer verified. Weight set to ${fakeWeight} KG.`, { duration: 4000 });
     };
 
     const handleLogWeight = () => {
-        if (!weight) {
-            toast.error('Please enter a weight first.');
+        const weightNum = parseFloat(weight);
+        if (!weight || isNaN(weightNum) || weightNum <= 0) {
+            toast.error('Please enter a valid positive weight first.');
             return;
         }
 

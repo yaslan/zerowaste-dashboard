@@ -14,6 +14,7 @@ const impactData = [
 
 export default function CitizenImpactApp() {
     const userBalance = useWasteStore(state => state.userBalance);
+    const transactions = useWasteStore(state => state.transactions || []);
     const redeemTokens = useWasteStore(state => state.redeemTokens);
     const logCollection = useWasteStore(state => state.logCollection);
 
@@ -154,56 +155,30 @@ export default function CitizenImpactApp() {
                         <button onClick={() => toast("Fetching full activity history...")} className="text-primary dark:text-emerald-400 text-sm font-semibold hover:underline">See All</button>
                     </div>
                     <div className="space-y-3">
-                        <div className="flex items-center gap-4 p-3 rounded-xl bg-white dark:bg-primary/10 border border-primary/5 dark:border-primary/20 hover:border-primary/50 transition-colors">
-                            <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400">
-                                <span className="material-symbols-outlined">check_circle</span>
-                            </div>
-                            <div className="flex flex-1 flex-col">
-                                <p className="text-slate-900 dark:text-slate-100 text-sm font-bold">Plastic & Glass Pickup</p>
-                                <div className="flex items-center gap-1.5 mt-0.5">
-                                    <span className="material-symbols-outlined text-[14px] text-emerald-500">verified_user</span>
-                                    <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Smart Contract: Verified</p>
+                        {transactions.map(tx => (
+                            <div key={tx.id} className="flex items-center gap-4 p-3 rounded-xl bg-white dark:bg-primary/10 border border-primary/5 dark:border-primary/20 hover:border-primary/50 transition-colors">
+                                <div className={`flex size-10 shrink-0 items-center justify-center rounded-lg ${tx.type === 'earn' ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400' : 'bg-rose-100 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400'}`}>
+                                    <span className="material-symbols-outlined">{tx.type === 'earn' ? 'check_circle' : 'shopping_bag'}</span>
+                                </div>
+                                <div className="flex flex-1 flex-col">
+                                    <p className="text-slate-900 dark:text-slate-100 text-sm font-bold">{tx.title}</p>
+                                    <div className="flex items-center gap-1.5 mt-0.5">
+                                        <span className={`material-symbols-outlined text-[14px] ${tx.type === 'earn' ? 'text-emerald-500' : 'text-slate-400'}`}>
+                                            {tx.type === 'earn' ? 'verified_user' : 'account_balance'}
+                                        </span>
+                                        <p className={`text-xs font-medium ${tx.type === 'earn' ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400'}`}>
+                                            {tx.type === 'earn' ? 'Smart Contract: Verified' : 'Marketplace Transaction'}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="text-right">
+                                    <p className={`text-sm font-bold ${tx.type === 'earn' ? 'text-emerald-500' : 'text-slate-900 dark:text-slate-100'}`}>
+                                        {tx.type === 'earn' ? '+' : '-'}{tx.amount} ETK
+                                    </p>
+                                    <p className="text-slate-400 text-[10px]">{tx.time}</p>
                                 </div>
                             </div>
-                            <div className="text-right">
-                                <p className="text-slate-900 dark:text-slate-100 text-sm font-bold text-emerald-500">+12 ETK</p>
-                                <p className="text-slate-400 text-[10px]">Today, 10:24 AM</p>
-                            </div>
-                        </div>
-
-                        <div className="flex items-center gap-4 p-3 rounded-xl bg-white dark:bg-primary/10 border border-primary/5 dark:border-primary/20 hover:border-primary/50 transition-colors">
-                            <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400">
-                                <span className="material-symbols-outlined">check_circle</span>
-                            </div>
-                            <div className="flex flex-1 flex-col">
-                                <p className="text-slate-900 dark:text-slate-100 text-sm font-bold">Organic Waste Deposit</p>
-                                <div className="flex items-center gap-1.5 mt-0.5">
-                                    <span className="material-symbols-outlined text-[14px] text-emerald-500">verified_user</span>
-                                    <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Smart Contract: Verified</p>
-                                </div>
-                            </div>
-                            <div className="text-right">
-                                <p className="text-slate-900 dark:text-slate-100 text-sm font-bold text-emerald-500">+5 ETK</p>
-                                <p className="text-slate-400 text-[10px]">Yesterday</p>
-                            </div>
-                        </div>
-
-                        <div className="flex items-center gap-4 p-3 rounded-xl bg-white dark:bg-primary/10 border border-primary/5 dark:border-primary/20 hover:border-primary/50 transition-colors">
-                            <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400">
-                                <span className="material-symbols-outlined">check_circle</span>
-                            </div>
-                            <div className="flex flex-1 flex-col">
-                                <p className="text-slate-900 dark:text-slate-100 text-sm font-bold">Paper Recycling Milestone</p>
-                                <div className="flex items-center gap-1.5 mt-0.5">
-                                    <span className="material-symbols-outlined text-[14px] text-emerald-500">verified_user</span>
-                                    <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Smart Contract: Verified</p>
-                                </div>
-                            </div>
-                            <div className="text-right">
-                                <p className="text-slate-900 dark:text-slate-100 text-sm font-bold text-emerald-500">+50 ETK</p>
-                                <p className="text-slate-400 text-[10px]">2 days ago</p>
-                            </div>
-                        </div>
+                        ))}
                     </div>
                 </div>
             </main>

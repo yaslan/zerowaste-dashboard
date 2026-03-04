@@ -32,6 +32,12 @@ const useWasteStore = create((set, get) => ({
         }
     ],
 
+    transactions: [
+        { id: 'T-1', title: 'Paper Recycling Milestone', type: 'earn', amount: 50, time: '2 days ago' },
+        { id: 'T-2', title: 'Organic Waste Deposit', type: 'earn', amount: 5, time: 'Yesterday' },
+        { id: 'T-3', title: 'Plastic & Glass Pickup', type: 'earn', amount: 12, time: '10:24 AM' }
+    ],
+
     // Supabase Loaders (Will populate via database when configured)
     fetchInitialData: async () => {
         if (!supabase) return;
@@ -69,12 +75,23 @@ const useWasteStore = create((set, get) => ({
             try { await supabase.from('batches').insert([newBatch]); } catch (e) { }
         }
 
-        set((state) => ({
-            batches: [newBatch, ...state.batches],
-            totalRecycledTons: +(state.totalRecycledTons + weightTons).toFixed(2),
-            ecoTokens: state.ecoTokens + tokensEarned,
-            userBalance: source === 'Citizen App' ? state.userBalance + tokensEarned : state.userBalance
-        }));
+        set((state) => {
+            let newTransactions = state.transactions;
+            if (source === 'Citizen App' && tokensEarned > 0) {
+                newTransactions = [
+                    { id: 'T-' + Math.floor(Math.random() * 9999), title: `Smart Bin: ${type} Deposit`, type: 'earn', amount: tokensEarned, time: 'Just now' },
+                    ...state.transactions
+                ];
+            }
+
+            return {
+                batches: [newBatch, ...state.batches],
+                transactions: newTransactions,
+                totalRecycledTons: +(state.totalRecycledTons + weightTons).toFixed(2),
+                ecoTokens: state.ecoTokens + tokensEarned,
+                userBalance: source === 'Citizen App' ? state.userBalance + tokensEarned : state.userBalance
+            };
+        });
     },
 
     processPending: async () => {
@@ -110,7 +127,19 @@ const useWasteStore = create((set, get) => ({
         if (state.userBalance >= amount) {
             const newBalance = state.userBalance - amount;
             // Optionally sync balance update to DB Profile here...
-            set({ userBalance: newBalance });
+
+            const redemptionTx = {
+                id: 'T-' + Math.floor(Math.random() * 9999),
+                title: 'Marketplace Redemption',
+                type: 'spend',
+                amount: amount,
+                time: 'Just now'
+            };
+
+            set({
+                userBalance: newBalance,
+                transactions: [redemptionTx, ...state.transactions]
+            });
         }
     }
 }));
