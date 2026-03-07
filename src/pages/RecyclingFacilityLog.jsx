@@ -67,12 +67,12 @@ export default function RecyclingFacilityLog() {
     };
 
     return (
-        <div className="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 transition-colors duration-300">
+        <div className="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-800 dark:text-slate-100 transition-colors duration-300">
             <div className="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
                 {/* Top Navigation Bar */}
                 <header className="flex items-center justify-between border-b border-primary/20 bg-background-light dark:bg-background-dark px-6 py-4 lg:px-10 z-10 sticky top-0">
                     <div className="flex items-center gap-8">
-                        <div className="flex items-center gap-3 text-primary dark:text-slate-100">
+                        <div className="flex items-center gap-3 text-primary dark:text-slate-800 dark:text-slate-100">
                             <div className="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
                                 <span className="material-symbols-outlined">recycling</span>
                             </div>
@@ -84,12 +84,12 @@ export default function RecyclingFacilityLog() {
                                 <input
                                     value={searchQuery}
                                     onChange={e => setSearchQuery(e.target.value)}
-                                    className="bg-transparent border-none focus:ring-0 text-sm w-64 placeholder:text-slate-500 dark:placeholder:text-slate-400"
+                                    className="bg-transparent border-none focus:ring-0 text-sm w-64 placeholder:text-slate-500 dark:placeholder:text-slate-500 dark:text-slate-400"
                                     placeholder="Search batches, types..."
                                     type="text"
                                 />
                                 {searchQuery && (
-                                    <button onClick={() => setSearchQuery('')} className="text-slate-400 hover:text-white">
+                                    <button onClick={() => setSearchQuery('')} className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-white">
                                         <span className="material-symbols-outlined text-sm">close</span>
                                     </button>
                                 )}
@@ -97,10 +97,10 @@ export default function RecyclingFacilityLog() {
                         </div>
                     </div>
                     <div className="flex items-center gap-4">
-                        <button onClick={() => toast('No new notifications')} className="flex items-center justify-center rounded-lg h-10 w-10 bg-slate-200 dark:bg-primary/30 text-slate-700 dark:text-slate-100 hover:bg-slate-300 dark:hover:bg-primary/50 transition-colors">
+                        <button onClick={() => toast('No new notifications')} className="flex items-center justify-center rounded-lg h-10 w-10 bg-slate-200 dark:bg-primary/30 text-slate-700 dark:text-slate-800 dark:text-slate-100 hover:bg-slate-300 dark:hover:bg-primary/50 transition-colors">
                             <span className="material-symbols-outlined">notifications</span>
                         </button>
-                        <button onClick={() => toast('Settings opened')} className="flex items-center justify-center rounded-lg h-10 w-10 bg-slate-200 dark:bg-primary/30 text-slate-700 dark:text-slate-100 hover:bg-slate-300 dark:hover:bg-primary/50 transition-colors">
+                        <button onClick={() => toast('Settings opened')} className="flex items-center justify-center rounded-lg h-10 w-10 bg-slate-200 dark:bg-primary/30 text-slate-700 dark:text-slate-800 dark:text-slate-100 hover:bg-slate-300 dark:hover:bg-primary/50 transition-colors">
                             <span className="material-symbols-outlined">settings</span>
                         </button>
                         <div className="flex items-center gap-3 border-l border-primary/20 pl-4">
@@ -108,7 +108,7 @@ export default function RecyclingFacilityLog() {
                                 <p className="text-xs font-bold">Admin User</p>
                                 <p className="text-[10px] text-slate-500">Facility #102</p>
                             </div>
-                            <Link to="/" className="flex items-center justify-center rounded-lg h-10 w-10 bg-slate-200 dark:bg-primary/30 text-slate-700 dark:text-slate-100 hover:bg-slate-300 dark:hover:bg-primary/50 transition-colors" title="Back to Home">
+                            <Link to="/" className="flex items-center justify-center rounded-lg h-10 w-10 bg-slate-200 dark:bg-primary/30 text-slate-700 dark:text-slate-800 dark:text-slate-100 hover:bg-slate-300 dark:hover:bg-primary/50 transition-colors" title="Back to Home">
                                 <span className="material-symbols-outlined">home</span>
                             </Link>
                             <div className="bg-slate-300 dark:bg-primary size-10 rounded-full flex items-center justify-center cursor-pointer hover:scale-105 transition-transform">
@@ -122,7 +122,7 @@ export default function RecyclingFacilityLog() {
                     {/* Sidebar Navigation */}
                     <aside className="w-full lg:w-64 border-r border-primary/10 bg-background-light dark:bg-background-dark p-4 flex flex-col gap-6">
                         <div className="flex flex-col gap-1">
-                            <h3 className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">Main Menu</h3>
+                            <h3 className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Main Menu</h3>
                             <nav className="flex flex-col gap-1">
                                 {[
                                     { id: 'overview', icon: 'dashboard', label: 'Overview' },
@@ -135,7 +135,7 @@ export default function RecyclingFacilityLog() {
                                         onClick={() => setActiveTab(item.id)}
                                         className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-left w-full transition-colors ${activeTab === item.id
                                                 ? 'bg-primary text-white'
-                                                : 'text-slate-600 dark:text-slate-400 hover:bg-primary/10'
+                                                : 'text-slate-600 dark:text-slate-500 dark:text-slate-400 hover:bg-primary/10'
                                             }`}
                                     >
                                         <span className="material-symbols-outlined">{item.icon}</span>
@@ -220,9 +220,9 @@ export default function RecyclingFacilityLog() {
                                         <span className="material-symbols-outlined text-primary">list_alt</span>
                                         Bulk Intake Log
                                     </h2>
-                                    <button onClick={() => toast('Opening full logs...')} className="text-primary dark:text-slate-300 text-sm font-medium hover:underline">View All</button>
+                                    <button onClick={() => toast('Opening full logs...')} className="text-primary dark:text-slate-600 dark:text-slate-300 text-sm font-medium hover:underline">View All</button>
                                 </div>
-                                <div className="bg-white dark:bg-background-dark/50 border border-slate-200 dark:border-primary/20 rounded-xl overflow-hidden shadow-sm">
+                                <div className="bg-white dark:bg-background-light dark:bg-background-dark/50 border border-slate-200 dark:border-primary/20 rounded-xl overflow-hidden shadow-sm">
                                     <div className="overflow-x-auto">
                                         <table className="w-full text-left text-sm">
                                             <thead className="bg-slate-50 dark:bg-primary/20 text-slate-500 dark:text-slate-400 font-bold border-b border-slate-200 dark:border-primary/20 uppercase text-[10px]">
@@ -237,13 +237,13 @@ export default function RecyclingFacilityLog() {
                                                 {batches.map(batch => (
                                                     <tr key={batch.id} className="hover:bg-slate-50 dark:hover:bg-primary/5 transition-colors group cursor-pointer" onClick={() => toast(`Viewing ${batch.id} details`)}>
                                                         <td className="px-6 py-4">
-                                                            <div className="font-medium text-slate-900 dark:text-slate-100 group-hover:text-primary transition-colors">{batch.source}</div>
+                                                            <div className="font-medium text-slate-900 dark:text-slate-800 dark:text-slate-100 group-hover:text-primary transition-colors">{batch.source}</div>
                                                             <div className="text-xs text-slate-500">{batch.time}</div>
                                                         </td>
                                                         <td className="px-6 py-4">
                                                             <span className={`px-2 py-1 rounded text-[11px] font-bold uppercase
                                                                 ${batch.type === 'PLASTIC' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' :
-                                                                    batch.type === 'METAL' ? 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300' :
+                                                                    batch.type === 'METAL' ? 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-600 dark:text-slate-300' :
                                                                         batch.type === 'Organic' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300' :
                                                                             'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300'}`}>
                                                                 {batch.type}
@@ -274,7 +274,7 @@ export default function RecyclingFacilityLog() {
                                         Intake by Type
                                     </h2>
                                 </div>
-                                <div className="bg-white dark:bg-background-dark/50 border border-slate-200 dark:border-primary/20 rounded-xl p-4 shadow-sm flex-1 flex flex-col justify-center min-h-[300px]">
+                                <div className="bg-white dark:bg-background-light dark:bg-background-dark/50 border border-slate-200 dark:border-primary/20 rounded-xl p-4 shadow-sm flex-1 flex flex-col justify-center min-h-[300px]">
                                     <ResponsiveContainer width="100%" height="100%">
                                         <BarChart data={typeData} layout="vertical" margin={{ top: 0, right: 0, left: 10, bottom: 0 }}>
                                             <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#334155" opacity={0.2} />

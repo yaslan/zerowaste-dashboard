@@ -1,0 +1,42 @@
+{
+    "app": {
+        "loadingSession": "Loading Session...",
+        "hubTitle": "ZeroWaste Project Hub",
+        "hubDescription": "Select an interface below to view its specific functional dashboard or mobile application.",
+        "citizenPanelTitle": "Citizen Panel (User Dashboard)",
+        "citizenPanelDesc": "Personal dashboard for citizens to view impact, manage EcoTokens, and request pickups on Desktop/Tablet.",
+        "municipalityTitle": "Municipality Dashboard",
+        "municipalityDesc": "Desktop admin panel for city-wide overview, map tracking and overall metrics.",
+        "citizenImpactTitle": "Citizen Impact App",
+        "citizenImpactDesc": "Mobile application interface for citizens to track personal recycling impact.",
+        "collectorTitle": "Collector Pickup Tool",
+        "collectorDesc": "Mobile tablet tool for collectors to follow active routes and scan bins.",
+        "facilityTitle": "Recycling Facility Log",
+        "facilityDesc": "Desktop dashboard for facility managers to review intake and processes.",
+        "sortingTitle": "Sorting Facility Hub",
+        "sortingDesc": "Mobile interface for sorting floor workers to manage batches.",
+        "pageNotFound": "Page not found.",
+        "backToHome": "← Back to Home"
+    },
+    "login": {
+        "adminAccess": "Admin Access",
+        "createAccount": "Create Account",
+        "signInToBoard": "Sign in to Municipality Dashboard",
+        "signUpToManage": "Sign up to manage city waste",
+        "emailLabel": "Email Address",
+        "passwordLabel": "Password",
+        "emailPlaceholder": "admin@zerowaste.city",
+        "passwordPlaceholder": "••••••••",
+        "signIn": "Sign In",
+        "signUp": "Sign Up",
+        "dontHaveAccount": "Don't have an account?",
+        "alreadyHaveAccount": "Already have an account?",
+        "backToHome": "Back to Home",
+        "fillFieldsMsg": "Please fill in all fields",
+        "passMinLengthMsg": "Password must be at least 6 characters",
+        "successLoginMsg": "Successfully logged in!",
+        "successRegMsg": "Successfully registered & logged in!",
+        "failLoginMsg": "Failed to login",
+        "failRegMsg": "Failed to register"
+    }
+}

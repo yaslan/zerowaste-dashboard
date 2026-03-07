@@ -59,15 +59,15 @@ export default function CitizenImpactApp() {
     };
 
     return (
-        <div className="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col font-display">
+        <div className="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-800 dark:text-slate-100 min-h-screen flex flex-col font-display">
             {/* Top Navigation Bar */}
             <header className="sticky top-0 z-10 flex items-center bg-background-light dark:bg-background-dark p-4 border-b border-primary/10 dark:border-primary/20 justify-between">
                 <Link to="/" className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10 dark:bg-primary/20 hover:bg-primary/30 transition-colors">
                     <span className="material-symbols-outlined text-primary dark:text-primary-light">home</span>
                 </Link>
-                <h1 className="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-tight flex-1 ml-3 font-display">Zero Waste</h1>
+                <h1 className="text-slate-900 dark:text-slate-800 dark:text-slate-100 text-lg font-bold leading-tight tracking-tight flex-1 ml-3 font-display">Zero Waste</h1>
                 <div className="flex items-center gap-2">
-                    <button onClick={() => toast("You have 2 new local community circulars")} className="flex items-center justify-center rounded-lg h-10 w-10 bg-primary/10 dark:bg-primary/20 text-primary dark:text-slate-100 hover:bg-primary/30 transition-colors">
+                    <button onClick={() => toast("You have 2 new local community circulars")} className="flex items-center justify-center rounded-lg h-10 w-10 bg-primary/10 dark:bg-primary/20 text-primary dark:text-slate-800 dark:text-slate-100 hover:bg-primary/30 transition-colors">
                         <span className="material-symbols-outlined">notifications</span>
                     </button>
                 </div>
@@ -81,7 +81,7 @@ export default function CitizenImpactApp() {
                             <span className="material-symbols-outlined text-sm">recycling</span>
                             <p className="text-sm font-medium">Recycled</p>
                         </div>
-                        <p className="text-slate-900 dark:text-slate-100 text-2xl font-bold font-display">{totalRecycledKg.toFixed(1)} kg</p>
+                        <p className="text-slate-900 dark:text-slate-800 dark:text-slate-100 text-2xl font-bold font-display">{totalRecycledKg.toFixed(1)} kg</p>
                         <p className="text-emerald-600 dark:text-emerald-400 text-xs font-semibold">Total Earned</p>
                     </div>
                     <div className="flex flex-col gap-2 rounded-xl p-5 bg-primary/5 dark:bg-primary/20 border border-primary/10 hover:border-primary/40 transition-colors cursor-pointer" onClick={() => toast('Viewing Carbon Offset Details')}>
@@ -89,7 +89,7 @@ export default function CitizenImpactApp() {
                             <span className="material-symbols-outlined text-sm">co2</span>
                             <p className="text-sm font-medium">Carbon Saved</p>
                         </div>
-                        <p className="text-slate-900 dark:text-slate-100 text-2xl font-bold font-display">{totalCarbonSaved} kg</p>
+                        <p className="text-slate-900 dark:text-slate-800 dark:text-slate-100 text-2xl font-bold font-display">{totalCarbonSaved} kg</p>
                         <p className="text-emerald-600 dark:text-emerald-400 text-xs font-semibold">CO₂ Offset</p>
                     </div>
                 </div>
@@ -98,7 +98,7 @@ export default function CitizenImpactApp() {
                 <div className="px-4 pb-4">
                     <div className="bg-white dark:bg-primary/5 rounded-xl border border-primary/10 shadow-sm p-4">
                         <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-slate-900 dark:text-slate-100 text-sm font-bold font-display">Impact Over Time</h3>
+                            <h3 className="text-slate-900 dark:text-slate-800 dark:text-slate-100 text-sm font-bold font-display">Impact Over Time</h3>
                             <span className="text-xs font-medium text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded">6 Weeks</span>
                         </div>
                         <div className="h-40 w-full">
@@ -126,7 +126,7 @@ export default function CitizenImpactApp() {
 
                 {/* Wallet Card */}
                 <div className="px-4 py-2 @container">
-                    <div className="relative overflow-hidden flex flex-col items-stretch justify-start rounded-xl shadow-lg bg-primary text-slate-100 p-6 transition-transform hover:scale-[1.02]">
+                    <div className="relative overflow-hidden flex flex-col items-stretch justify-start rounded-xl shadow-lg bg-primary text-slate-800 dark:text-slate-100 p-6 transition-transform hover:scale-[1.02]">
                         <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
                         <div className="absolute -left-4 -bottom-4 w-24 h-24 bg-emerald-400/10 rounded-full blur-xl animate-pulse"></div>
                         <div className="relative z-10 flex flex-col gap-4">
@@ -142,7 +142,7 @@ export default function CitizenImpactApp() {
                                     <p className="text-emerald-200/60 text-[10px] uppercase">Wallet Address</p>
                                     <p className="text-xs font-mono opacity-80" onClick={() => { toast.success('Address copied!'); navigator.clipboard.writeText('0x7ae...E42d') }}>0x7a...E42d <span className="material-symbols-outlined text-[10px] cursor-pointer ml-1">content_copy</span></p>
                                 </div>
-                                <button onClick={handleRedeem} className="flex items-center justify-center rounded-lg h-9 px-4 bg-emerald-500 text-white text-sm font-semibold hover:bg-emerald-400 active:bg-emerald-600 transition-colors shadow-md">
+                                <button onClick={handleRedeem} className="flex items-center justify-center rounded-lg h-9 px-4 bg-emerald-500 text-slate-900 dark:text-white text-sm font-semibold hover:bg-emerald-400 active:bg-emerald-600 transition-colors shadow-md">
                                     <span>Redeem</span>
                                 </button>
                             </div>
@@ -161,7 +161,7 @@ export default function CitizenImpactApp() {
                 {/* Recent Activity Log */}
                 <div className="px-4 pb-4">
                     <div className="flex items-center justify-between mb-4 px-1">
-                        <h3 className="text-slate-900 dark:text-slate-100 text-lg font-bold font-display">Recent Activity</h3>
+                        <h3 className="text-slate-900 dark:text-slate-800 dark:text-slate-100 text-lg font-bold font-display">Recent Activity</h3>
                         <button onClick={() => toast("Fetching full activity history...")} className="text-primary dark:text-emerald-400 text-sm font-semibold hover:underline">See All</button>
                     </div>
                     <div className="space-y-3">
@@ -171,9 +171,9 @@ export default function CitizenImpactApp() {
                                     <span className="material-symbols-outlined">{tx.type === 'earn' ? 'check_circle' : 'shopping_bag'}</span>
                                 </div>
                                 <div className="flex flex-1 flex-col">
-                                    <p className="text-slate-900 dark:text-slate-100 text-sm font-bold">{tx.title}</p>
+                                    <p className="text-slate-900 dark:text-slate-800 dark:text-slate-100 text-sm font-bold">{tx.title}</p>
                                     <div className="flex items-center gap-1.5 mt-0.5">
-                                        <span className={`material-symbols-outlined text-[14px] ${tx.type === 'earn' ? 'text-emerald-500' : 'text-slate-400'}`}>
+                                        <span className={`material-symbols-outlined text-[14px] ${tx.type === 'earn' ? 'text-emerald-500' : 'text-slate-500 dark:text-slate-400'}`}>
                                             {tx.type === 'earn' ? 'verified_user' : 'account_balance'}
                                         </span>
                                         <p className={`text-xs font-medium ${tx.type === 'earn' ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400'}`}>
@@ -182,10 +182,10 @@ export default function CitizenImpactApp() {
                                     </div>
                                 </div>
                                 <div className="text-right">
-                                    <p className={`text-sm font-bold ${tx.type === 'earn' ? 'text-emerald-500' : 'text-slate-900 dark:text-slate-100'}`}>
+                                    <p className={`text-sm font-bold ${tx.type === 'earn' ? 'text-emerald-500' : 'text-slate-900 dark:text-slate-800 dark:text-slate-100'}`}>
                                         {tx.type === 'earn' ? '+' : '-'}{tx.amount} ETK
                                     </p>
-                                    <p className="text-slate-400 text-[10px]">{tx.time}</p>
+                                    <p className="text-slate-500 dark:text-slate-400 text-[10px]">{tx.time}</p>
                                 </div>
                             </div>
                         ))}
@@ -200,15 +200,15 @@ export default function CitizenImpactApp() {
                         <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>home</span>
                         <p className="text-[10px] font-bold">Home</p>
                     </a>
-                    <a className="flex flex-1 flex-col items-center gap-1 text-slate-400 dark:text-slate-500 hover:text-primary transition-colors cursor-pointer" onClick={(e) => { e.preventDefault(); toast('Opening Impact Detailed Stats'); }}>
+                    <a className="flex flex-1 flex-col items-center gap-1 text-slate-500 dark:text-slate-400 dark:text-slate-500 hover:text-primary transition-colors cursor-pointer" onClick={(e) => { e.preventDefault(); toast('Opening Impact Detailed Stats'); }}>
                         <span className="material-symbols-outlined">analytics</span>
                         <p className="text-[10px] font-medium">Impact</p>
                     </a>
-                    <a className="flex flex-1 flex-col items-center gap-1 text-slate-400 dark:text-slate-500 hover:text-primary transition-colors cursor-pointer" onClick={(e) => { e.preventDefault(); toast('Opening Wallet Dashboard'); }}>
+                    <a className="flex flex-1 flex-col items-center gap-1 text-slate-500 dark:text-slate-400 dark:text-slate-500 hover:text-primary transition-colors cursor-pointer" onClick={(e) => { e.preventDefault(); toast('Opening Wallet Dashboard'); }}>
                         <span className="material-symbols-outlined">wallet</span>
                         <p className="text-[10px] font-medium">Wallet</p>
                     </a>
-                    <a className="flex flex-1 flex-col items-center gap-1 text-slate-400 dark:text-slate-500 hover:text-primary transition-colors cursor-pointer" onClick={(e) => { e.preventDefault(); toast('Opening Profile'); }}>
+                    <a className="flex flex-1 flex-col items-center gap-1 text-slate-500 dark:text-slate-400 dark:text-slate-500 hover:text-primary transition-colors cursor-pointer" onClick={(e) => { e.preventDefault(); toast('Opening Profile'); }}>
                         <span className="material-symbols-outlined">person</span>
                         <p className="text-[10px] font-medium">Profile</p>
                     </a>

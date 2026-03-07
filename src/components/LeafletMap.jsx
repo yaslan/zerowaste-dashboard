@@ -5,8 +5,8 @@ import toast from 'react-hot-toast'
 export default function LeafletMap({ markers }) {
     return (
         <MapContainer
-            center={[41.015, 28.98]}
-            zoom={12}
+            center={[41.2867, 36.3300]} // Samsun İlkadım
+            zoom={13}
             scrollWheelZoom={false}
             style={{ height: '100%', width: '100%', minHeight: '400px' }}
             zoomControl={false}

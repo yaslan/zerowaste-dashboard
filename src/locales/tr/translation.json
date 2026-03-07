@@ -1,0 +1,42 @@
+{
+    "app": {
+        "loadingSession": "Oturum Yükleniyor...",
+        "hubTitle": "ZeroWaste Proje Merkezi",
+        "hubDescription": "İlgili işlevsel paneli veya mobil uygulamayı görüntülemek için aşağıdan bir arayüz seçin.",
+        "citizenPanelTitle": "Vatandaş Paneli (Kullanıcı Paneli)",
+        "citizenPanelDesc": "Vatandaşların etkilerini görebileceği, EcoToken'larını yönetebileceği ve Masaüstü/Tablet üzerinden atık alım talebinde bulunabileceği kişisel panel.",
+        "municipalityTitle": "Belediye Yönetim Paneli",
+        "municipalityDesc": "Şehir geneli görünüm, harita takibi ve genel metrikler için masaüstü yönetici paneli.",
+        "citizenImpactTitle": "Vatandaş Etki Uygulaması",
+        "citizenImpactDesc": "Vatandaşların kişisel geri dönüşüm etkilerini takip edebileceği mobil uygulama arayüzü.",
+        "collectorTitle": "Toplayıcı Aracı",
+        "collectorDesc": "Toplayıcıların aktif rotaları takip edip kutuları okutabileceği mobil tablet aracı.",
+        "facilityTitle": "Geri Dönüşüm Tesisi Kayıtları",
+        "facilityDesc": "Tesis yöneticilerinin alım ve süreçleri inceleyebileceği masaüstü yönetim paneli.",
+        "sortingTitle": "Ayrıştırma Tesisi Merkezi",
+        "sortingDesc": "Ayrıştırma alanı çalışanlarının partileri yönetebileceği mobil arayüz.",
+        "pageNotFound": "Sayfa bulunamadı.",
+        "backToHome": "← Ana Sayfaya Dön"
+    },
+    "login": {
+        "adminAccess": "Yönetici Girişi",
+        "createAccount": "Hesap Oluştur",
+        "signInToBoard": "Belediye Paneline Giriş Yap",
+        "signUpToManage": "Şehir atıklarını yönetmek için kaydol",
+        "emailLabel": "E-posta Adresi",
+        "passwordLabel": "Parola",
+        "emailPlaceholder": "admin@zerowaste.city",
+        "passwordPlaceholder": "••••••••",
+        "signIn": "Giriş Yap",
+        "signUp": "Kaydol",
+        "dontHaveAccount": "Hesabınız yok mu?",
+        "alreadyHaveAccount": "Zaten hesabınız var mı?",
+        "backToHome": "Ana Sayfaya Dön",
+        "fillFieldsMsg": "Lütfen tüm alanları doldurun",
+        "passMinLengthMsg": "Parola en az 6 karakter olmalıdır",
+        "successLoginMsg": "Başarıyla giriş yapıldı!",
+        "successRegMsg": "Başarıyla kayıt olundu ve giriş yapıldı!",
+        "failLoginMsg": "Giriş başarısız",
+        "failRegMsg": "Kayıt başarısız"
+    }
+}

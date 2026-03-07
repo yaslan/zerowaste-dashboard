@@ -35,9 +35,9 @@ export default function SortingFacilityHub() {
     };
 
     return (
-        <div className="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+        <div className="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-800 dark:text-slate-100 min-h-screen flex flex-col">
             {/* Header */}
-            <header className="sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-neutral-700 p-4">
+            <header className="sticky top-0 z-10 bg-background-light/80 dark:bg-background-light dark:bg-background-dark/80 backdrop-blur-md border-b border-neutral-700 p-4">
                 <div className="flex items-center justify-between max-w-md mx-auto">
                     <div className="flex items-center gap-3">
                         <div className="size-10 rounded-full bg-primary flex items-center justify-center overflow-hidden border border-neutral-600">
@@ -47,14 +47,14 @@ export default function SortingFacilityHub() {
                             <h1 className="text-lg font-bold leading-tight">Sorting Hub #08</h1>
                             <div className="flex items-center gap-1.5">
                                 <span className="size-2 rounded-full bg-accent-green animate-pulse"></span>
-                                <p className="text-xs font-medium text-slate-400">Active • Syncing</p>
+                                <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Active • Syncing</p>
                             </div>
                         </div>
                     </div>
-                    <Link to="/" className="p-2 rounded-lg bg-neutral-800 text-slate-100 hover:bg-neutral-700 transition-colors" title="Back to Home">
+                    <Link to="/" className="p-2 rounded-lg bg-neutral-800 text-slate-800 dark:text-slate-100 hover:bg-neutral-700 transition-colors" title="Back to Home">
                         <span className="material-symbols-outlined">home</span>
                     </Link>
-                    <button onClick={() => toast('No new alerts from the system')} className="p-2 rounded-lg bg-neutral-800 text-slate-100 hover:bg-neutral-700 transition-colors">
+                    <button onClick={() => toast('No new alerts from the system')} className="p-2 rounded-lg bg-neutral-800 text-slate-800 dark:text-slate-100 hover:bg-neutral-700 transition-colors">
                         <span className="material-symbols-outlined">notifications</span>
                     </button>
                 </div>
@@ -97,15 +97,15 @@ export default function SortingFacilityHub() {
                             <span className="material-symbols-outlined">recycling</span>
                             <span className="text-xs font-medium">Plastic</span>
                         </button>
-                        <button onClick={() => toast('Filtering by Metal...')} className="flex flex-col items-center gap-2 min-w-[72px] p-3 rounded-xl bg-slate-200 dark:bg-neutral-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-neutral-700 hover:bg-slate-300 dark:hover:bg-neutral-700 transition-colors">
+                        <button onClick={() => toast('Filtering by Metal...')} className="flex flex-col items-center gap-2 min-w-[72px] p-3 rounded-xl bg-slate-200 dark:bg-neutral-800 text-slate-700 dark:text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-neutral-700 hover:bg-slate-300 dark:hover:bg-neutral-700 transition-colors">
                             <span className="material-symbols-outlined">precision_manufacturing</span>
                             <span className="text-xs font-medium">Metal</span>
                         </button>
-                        <button onClick={() => toast('Filtering by Organic...')} className="flex flex-col items-center gap-2 min-w-[72px] p-3 rounded-xl bg-slate-200 dark:bg-neutral-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-neutral-700 hover:bg-slate-300 dark:hover:bg-neutral-700 transition-colors">
+                        <button onClick={() => toast('Filtering by Organic...')} className="flex flex-col items-center gap-2 min-w-[72px] p-3 rounded-xl bg-slate-200 dark:bg-neutral-800 text-slate-700 dark:text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-neutral-700 hover:bg-slate-300 dark:hover:bg-neutral-700 transition-colors">
                             <span className="material-symbols-outlined">compost</span>
                             <span className="text-xs font-medium">Organic</span>
                         </button>
-                        <button onClick={() => toast('Filtering by Glass...')} className="flex flex-col items-center gap-2 min-w-[72px] p-3 rounded-xl bg-slate-200 dark:bg-neutral-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-neutral-700 hover:bg-slate-300 dark:hover:bg-neutral-700 transition-colors">
+                        <button onClick={() => toast('Filtering by Glass...')} className="flex flex-col items-center gap-2 min-w-[72px] p-3 rounded-xl bg-slate-200 dark:bg-neutral-800 text-slate-700 dark:text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-neutral-700 hover:bg-slate-300 dark:hover:bg-neutral-700 transition-colors">
                             <span className="material-symbols-outlined">wine_bar</span>
                             <span className="text-xs font-medium">Glass</span>
                         </button>
@@ -121,7 +121,7 @@ export default function SortingFacilityHub() {
 
                     {batches.length === 0 && (
                         <div className="bg-slate-200 dark:bg-neutral-800/50 rounded-xl p-8 border border-slate-300 dark:border-neutral-700 flex flex-col items-center justify-center text-center gap-2">
-                            <span className="material-symbols-outlined text-4xl text-slate-400">check_circle</span>
+                            <span className="material-symbols-outlined text-4xl text-slate-500 dark:text-slate-400">check_circle</span>
                             <p className="text-slate-500 font-medium">All batches sorted for now.</p>
                         </div>
                     )}
@@ -134,7 +134,7 @@ export default function SortingFacilityHub() {
                                 </div>
                                 <div className="flex-1">
                                     <div className="flex justify-between items-start">
-                                        <p className="font-bold text-slate-900 dark:text-slate-100">Batch #{batch.id}</p>
+                                        <p className="font-bold text-slate-900 dark:text-slate-800 dark:text-slate-100">Batch #{batch.id}</p>
                                         <span className="text-[10px] text-slate-500 dark:text-slate-400">{batch.time}</span>
                                     </div>
                                     <p className="text-sm text-slate-500 dark:text-slate-400">{batch.source}</p>
@@ -144,11 +144,11 @@ export default function SortingFacilityHub() {
                             <div className="flex gap-2">
                                 <button
                                     onClick={() => handleVerifyAndSort(batch.id)}
-                                    className="flex-1 py-2.5 bg-primary hover:bg-primary-light active:scale-95 transition-all text-white rounded-lg text-sm font-bold shadow-lg shadow-primary/20"
+                                    className="flex-1 py-2.5 bg-primary hover:bg-primary-light active:scale-95 transition-all text-slate-900 dark:text-white rounded-lg text-sm font-bold shadow-lg shadow-primary/20"
                                 >
                                     Verify & Sort
                                 </button>
-                                <button onClick={() => toast("Details opened.")} className="p-2.5 hover:bg-slate-400 bg-slate-300 dark:bg-neutral-700 text-slate-900 dark:text-slate-100 rounded-lg transition-colors">
+                                <button onClick={() => toast("Details opened.")} className="p-2.5 hover:bg-slate-400 bg-slate-300 dark:bg-neutral-700 text-slate-900 dark:text-slate-800 dark:text-slate-100 rounded-lg transition-colors">
                                     <span className="material-symbols-outlined text-[20px]">more_horiz</span>
                                 </button>
                             </div>
@@ -166,11 +166,11 @@ export default function SortingFacilityHub() {
                     </div>
                     <div className="space-y-3">
                         <div className="flex items-center justify-between text-xs">
-                            <span className="text-slate-600 dark:text-slate-400">Last Block Hash</span>
+                            <span className="text-slate-600 dark:text-slate-500 dark:text-slate-400">Last Block Hash</span>
                             <span className="font-mono text-accent-green bg-accent-green/10 px-1 rounded">{lastHash}</span>
                         </div>
                         <div className="flex items-center justify-between text-xs">
-                            <span className="text-slate-600 dark:text-slate-400">Status</span>
+                            <span className="text-slate-600 dark:text-slate-500 dark:text-slate-400">Status</span>
                             <span className="flex items-center gap-1 text-accent-green">
                                 <span className="material-symbols-outlined text-[14px]">check_circle</span>
                                 Verified
@@ -190,7 +190,7 @@ export default function SortingFacilityHub() {
                         <span className="material-symbols-outlined">inbox</span>
                         <span className="text-[10px] font-medium">Inbox</span>
                     </a>
-                    <a onClick={(e) => e.preventDefault()} className="flex flex-col items-center gap-1 text-primary dark:text-white" href="#">
+                    <a onClick={(e) => e.preventDefault()} className="flex flex-col items-center gap-1 text-primary dark:text-slate-900 dark:text-white" href="#">
                         <span className="material-symbols-outlined fill-icon">grid_view</span>
                         <span className="text-[10px] font-medium">Sorting</span>
                     </a>
